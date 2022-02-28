@@ -1,3 +1,4 @@
+import 'package:charity_stacked/services/authentication.dart';
 import 'package:charity_stacked/ui/bottom_nav_root_view/bottom_nav_root_view.dart';
 import 'package:charity_stacked/ui/onboard/onboard_view.dart';
 import 'package:charity_stacked/ui/user_creation/user_creation_view.dart';
@@ -12,6 +13,7 @@ import 'package:stacked_services/stacked_services.dart';
   ],
   dependencies: [
     LazySingleton(classType: NavigationService),
+    LazySingleton(classType: AuthenticationService),
   ],
 )
 class AppSetup {}

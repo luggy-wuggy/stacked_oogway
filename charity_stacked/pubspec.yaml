@@ -28,6 +28,7 @@ dependencies:
   stacked_services:
   google_fonts: ^2.3.1
   lottie: ^1.2.2
+  firebase_auth: ^3.3.9
 
 dev_dependencies:
   flutter_test:

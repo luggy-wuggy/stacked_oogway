@@ -6,7 +6,6 @@
 
 // ignore_for_file: public_member_api_docs
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked/stacked_annotations.dart';
@@ -44,13 +43,13 @@ class StackedRouter extends RouterBase {
       );
     },
     BottomNavRoot: (data) {
-      return CupertinoPageRoute<dynamic>(
+      return MaterialPageRoute<dynamic>(
         builder: (context) => const BottomNavRoot(),
         settings: data,
       );
     },
     UserCreation: (data) {
-      return CupertinoPageRoute<dynamic>(
+      return MaterialPageRoute<dynamic>(
         builder: (context) => const UserCreation(),
         settings: data,
       );
