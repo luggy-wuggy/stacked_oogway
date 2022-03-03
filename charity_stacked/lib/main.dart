@@ -1,9 +1,12 @@
 import 'package:charity_stacked/app/app.locator.dart';
 import 'package:charity_stacked/app/app.router.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  Firebase.initializeApp();
   setupLocator();
   runApp(const MyApp());
 }
