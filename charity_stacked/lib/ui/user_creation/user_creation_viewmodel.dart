@@ -8,7 +8,7 @@ class UserCreationModel extends BaseViewModel {
   final _navigationService = locator<NavigationService>();
 
   void navigateToApp() {
-    AuthenticationService().signInAnonymously();
+    AuthenticationService.signInAnonymously();
     _navigationService.replaceWith(Routes.bottomNavRoot);
   }
 }
