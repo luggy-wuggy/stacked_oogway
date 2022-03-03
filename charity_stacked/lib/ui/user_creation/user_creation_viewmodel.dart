@@ -7,6 +7,6 @@ class UserCreationModel extends BaseViewModel {
   final _navigationService = locator<NavigationService>();
 
   void navigateToApp() {
-    _navigationService.navigateTo(Routes.bottomNavRoot);
+    _navigationService.replaceWith(Routes.bottomNavRoot);
   }
 }
