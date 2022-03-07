@@ -1,0 +1,2875 @@
+---
+swagger: "2.0"
+info:
+  description: "The Charity Navigator Data API provides access to Charity Navigator's\n\
+    ratings, research content and charitable organization profiles."
+  version: "1.0.0"
+  title: "CharityNavigatorDataAPI"
+host: "api.data.charitynavigator.org"
+basePath: "/v2"
+tags:
+- name: "OrganizationCollection"
+  description: "The full collection of organizations in Charity Navigator. Allows\
+    \ paged\nretrieval, simple and advanced searching."
+- name: "OrganizationObject"
+  description: "Represents a single Organization in Charity Navigator."
+- name: "RatingCollection"
+  description: "Represents the set of Organization Ratings in Charity Navigator. <br/>\n\
+    ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+    \"Included with the paid Content Subscription.\")"
+- name: "RatingObject"
+  description: "Represents a single Rating in Charity Navigator. Each rating is listed\
+    \ once,\nunder its primary `referenceOrganization`. Note that the rating may apply\
+    \ to\nother organizations, and this is represented by `includedOrganizations`,\
+    \ which\nis a collection of hyperlinks to all of the organizations to which the\
+    \ rating\napplies. <br/> ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+    \"Included with the paid Content Subscription.\")"
+- name: "AdvisoryCollection"
+  description: "Represents the complete set of available Advisories."
+- name: "AdvisoryObject"
+  description: "Represents a single Advisory."
+- name: "ListCollection"
+  description: "Represents the full set of Lists defined in Charity Navigator. <br/>\n\
+    ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+    \"Included with the paid Content Subscription.\")"
+- name: "ListObject"
+  description: "Represents a single List defined in Charity Navigator. <br/> ![Content\n\
+    Subscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+    \"Included with the paid Content Subscription.\")"
+- name: "CategoryCollection"
+  description: "Charity Navigator's classification hierarchy for charitable Organizations,\n\
+    including Categories and Causes. <br/> ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+    \"Included with the paid Content Subscription.\")"
+- name: "ActiveAdvisoryCollection"
+  description: "Represents the complete list of Organizations with active advisories."
+schemes:
+- "https"
+paths:
+  /Organizations:
+    get:
+      tags:
+      - "Organization Collection"
+      description: "Retrieve a list of the organizations available in the Charity\
+        \ Navigator Data\nStore. Allows paged retrieval, simple and advanced searching."
+      operationId: "searchOrganizations"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "app_id"
+        in: "query"
+        description: "3Scale App ID: unique identifier for an application registered\
+          \ in the\nCharity Navigator  developer portal."
+        required: true
+        type: "string"
+        x-data-threescale-name: "app_ids"
+      - name: "app_key"
+        in: "query"
+        description: "3Scale App Key: a secret key to authenticate the assigned App\
+          \ ID."
+        required: true
+        type: "string"
+        x-data-threescale-name: "app_keys"
+      - name: "pageSize"
+        in: "query"
+        description: "Number of organizations to return in a single response message.\
+          \ Used in\ncombination with `pageNum` for paged responses. Default value\
+          \ is 100.  If\nspecified, must be an integer value between 1 and 1,000."
+        required: false
+        type: "integer"
+        format: "int32"
+      - name: "pageNum"
+        in: "query"
+        description: "Page number to return, in case the number of available objects\
+          \ in the result\nset is greater than the specified or default `pageSize`.\
+          \ Default value is 1.\nIf the value of pageNum is greater than the number\
+          \ of pages in the result set,\nthe method will return a 404 error. If the\
+          \ requested starting position, computed\nas `((pageNum-1) * pageSize) +\
+          \ 1`, is greater than the maximum supported result\nsize of 10,000 objects,\
+          \ the method will return a 400 error."
+        required: false
+        type: "integer"
+        format: "int32"
+      - name: "search"
+        in: "query"
+        description: "A simple search string that narrows the results to organizations\
+          \ matching\nthe specified search terms. This is a relevance-driven search,\
+          \ not an exact\nmatch. Whitespace-separated terms in the search string are\
+          \ combined using AND\nlogic, so adding terms has the effect of narrowing\
+          \ the search.\nBy default, the search looks for matches in all string or\
+          \ text properties. The\nsearchType parameter can change the field values\
+          \ included in the search."
+        required: false
+        type: "string"
+      - name: "searchType"
+        in: "query"
+        description: ".Used in combination with the `search` parameter, specifies\
+          \ the type of\n.search to be performed.\n.\n.| Value     | Search Behavior\
+          \                       |\n.| --------- | -------------------------------------\
+          \ |\n.| DEFAULT   | Search in all string properties.      |\n.| NAME_ONLY\
+          \ | Search only in the Organization name. |\n.\n.Omitting the searchType\
+          \ parameter has the same effect as specifying \"DEFAULT\".\n.\n.Any value\
+          \ other than the ones specified in the table above will cause an HTTP\n\
+          .400 error response."
+        required: false
+        type: "string"
+      - name: "rated"
+        in: "query"
+        description: ".Specifies whether to include only rated charities or unrated\
+          \ charities. By\n.default, all charities will be returned.\n.\n.Can be specified\
+          \ as `TRUE` or `FALSE`, `0` or `1`, or included without a value,\n.which\
+          \ is equivalent to `TRUE` or `1`.\n.\n.| Usage | Search Behavior |\n.| ---\
+          \ | --- |\n.| `rated=TRUE`<br/>`rated=1`<br/>`rated` | Return only rated\
+          \ charities. |\n.| `rated=FALSE`<br/>`rated=0` | Return only unrated charities.\
+          \ |\n.| (default) | Return all charities. |\n.\n.Any value other than the\
+          \ ones specified in the table above will cause an HTTP\n.400 error response."
+        required: false
+        type: "boolean"
+      - name: "categoryID"
+        in: "query"
+        description: "ID of a Category. Search results will be filtered to include\
+          \ only\norganizations in the specified category."
+        required: false
+        type: "string"
+      - name: "causeID"
+        in: "query"
+        description: "ID of a Cause. Search results will be filtered to include only\
+          \ organizations\nin the specified cause."
+        required: false
+        type: "string"
+      - name: "fundraisingOrgs"
+        in: "query"
+        description: ".Specifies whether to include or exclude organizations flagged\
+          \ by Charity\n.Navigator as fundraising organizations. By default, all charities\
+          \ will be\n.returned.<br/> [Learn\n.More](javascript:openBrWindow('http://www.charitynavigator.org/index.cfm?bay=glossary.word&gid=95&print=1','glossary','scrollbars=yes,width=760,height=400')\n\
+          .\n.Can be specified as `TRUE` or `FALSE`, `0` or `1`, or included without\
+          \ a value,\n.which is equivalent to `TRUE` or `1`.\n.\n.Note that a charity\
+          \ that has a \"Moderate\" or \"High\" Severity Advisory has its rating superseded\
+          \ by the Advisory\n.and will not show up with the rated filter on. A rated\
+          \ charity with \"Low\" Severity Advisory is still considered rated\n.and\
+          \ will still be found with the filter on.\n.\n.| Usage | Search Behavior\
+          \ |\n.| --- | --- |\n.| `fundraisingOrgs=TRUE`<br/>`fundraisingOrgs=1`<br/>`fundraisingOrgs`\
+          \ | Return only fundraising organizations. |\n.| `fundraisingOrgs=FALSE`<br/>`fundraisingOrgs=0`\
+          \ | Return only charities that are not fundraising organizations. |\n.|\
+          \ (default) | Return all charities. |\n.\n.Any value other than the ones\
+          \ specified in the table above will cause an HTTP\n.400 error response."
+        required: false
+        type: "boolean"
+      - name: "state"
+        in: "query"
+        description: "If set to a valid 2-letter state code (not case-sensitive),\
+          \ filters search\nresults to include only organizations in the specified\
+          \ state. An invalid state\ncode will respond with a 400 error."
+        required: false
+        type: "string"
+      - name: "city"
+        in: "query"
+        description: "Filters search results to include only organizations in cities\
+          \ whose names\nmatch the specified string. This uses fuzzy matching, and\
+          \ the city name may be\ngiven as a partial string."
+        required: false
+        type: "string"
+      - name: "zip"
+        in: "query"
+        description: "Filters search results to include only organizations in the\
+          \ specified zip\ncode."
+        required: false
+        type: "string"
+      - name: "minRating"
+        in: "query"
+        description: "Filters search results to include only organizations with a\
+          \ rating greater\nthan or equal to the specified value. Must be an integer\
+          \ value betwen 0 and 4,\ninclusive. Must be less than or equal to maxRating,\
+          \ if specified."
+        required: false
+        type: "integer"
+        format: "int32"
+      - name: "maxRating"
+        in: "query"
+        description: "Filters search results to include only organizations with a\
+          \ rating less than\nor equal to the specified value. Must be an integer\
+          \ value betwen 0 and 4,\ninclusive. Must be greater than or equal to minRating,\
+          \ if specified."
+        required: false
+        type: "integer"
+        format: "int32"
+      - name: "sizeRange"
+        in: "query"
+        description: ".Filters search results to include only organizations within\
+          \ a given size\n.bracket, as measured in annual Total Expenses. possible\
+          \ values include:\n.\n.| Value | Range             |\n.| ----- | -----------------\
+          \ |\n.| 1     | Up to $3.5MM      |\n.| 2     | $3.5MM to $13.5MM |\n.|\
+          \ 3     | $13.5MM and up    |\n."
+        required: false
+        type: "integer"
+        format: "int32"
+      - name: "donorPrivacy"
+        in: "query"
+        description: ".Specifies whether to include or exclude organizations that\
+          \ have a donor\n.privacy policy.  By default, all charities are included,\
+          \ regardless of donor\n.privacy policy.\n.\n.Can be specified as `TRUE`\
+          \ or `FALSE`, `0` or `1`, or included without a value,\n.which is equivalent\
+          \ to `TRUE` or `1`.\n.\n.| Usage | Search Behavior |\n.| --- | --- |\n.|\
+          \ `donorPrivacy=TRUE`<br/>`donorPrivacy=1`<br/>`donorPrivacy` | Return only\
+          \ organizations that have a donor privacy policy. |\n.| `donorPrivacy=FALSE`<br/>`donorPrivacy=0`\
+          \ | Return only organizations that do not have a donor privacy policy. |\n\
+          .| (default) | Return all charities. |\n.\n.Any value other than the ones\
+          \ specified in the table above will cause an HTTP\n.400 error response."
+        required: false
+        type: "boolean"
+      - name: "scopeOfWork"
+        in: "query"
+        description: "Filters search results to include only organizations with a\
+          \ given scope of\nwork. Possible values are \"ALL\" (the default), \"REGIONAL\"\
+          , \"NATIONAL\", or\n\"INTERNATIONAL\""
+        required: false
+        type: "integer"
+        format: "int32"
+      - name: "cfcCharities"
+        in: "query"
+        description: ".Specifies whether to include or exclude organizations that\
+          \ are included in\n.the Combined Federal Campaign, the largest workplace\
+          \ giving campaign in USA. By\n.default, all organizations are included.<br/>\
+          \ [Learn\n.More](https://www.charitynavigator.org/index.cfm?bay=glossary.word&word=CFC&print=1.)\n\
+          .\n.Can be specified as `TRUE` or `FALSE`, `0` or `1`, or included without\
+          \ a value,\n.which is equivalent to `TRUE` or `1`.\n.\n.| Usage | Search\
+          \ Behavior |\n.| --- | --- |\n.| `cfcCharities=TRUE`<br/>`cfcCharities=1`<br/>`cfcCharities`\
+          \ | Return only CFC charities. |\n.| `cfcCharities=FALSE`<br/>`cfcCharities=0`\
+          \ | Return only non-CFC charities. |\n.| (default) | Return all charities.\
+          \ |\n.\n.Any value other than the ones specified in the table above will\
+          \ cause an HTTP\n.400 error response."
+        required: false
+        type: "boolean"
+      - name: "noGovSupport"
+        in: "query"
+        description: ".Specifies whether to include or exclude organizations that\
+          \ do not receive\n.government support. By default, all organizations are\
+          \ included.\n.\n.Can be specified as `TRUE` or `FALSE`, `0` or `1`, or included\
+          \ without a value,\n.which is equivalent to `TRUE` or `1`.\n.\n.| Usage\
+          \ | Search Behavior |\n.| --- | --- |\n.| `noGovSupport=TRUE`<br/>`noGovSupport=1`<br/>`noGovSupport`\
+          \ | Return only charities that do not receive government support. |\n.|\
+          \ `noGovSupport=FALSE`<br/>`noGovSupport=0` | Return only charities that\
+          \ receive government support. |\n.| (default) | Return all charities. |\n\
+          .\n.Any value other than the ones specified in the table above will cause\
+          \ an HTTP\n.400 error response."
+        required: false
+        type: "boolean"
+      - name: "sort"
+        in: "query"
+        description: ".Specifies how results should be sorted. By default, results\
+          \ are sorted by\n.increasing `ein` value unless a `search` string is specified,\
+          \ in which case\n.results are sorted by decreasing relevance to the search\
+          \ string.\n.\n.This parameter takes the form of a sort property and an optional\
+          \ direction\n.indicator, separated by a colon. E.g. `NAME` or `NAME:ASC`.\n\
+          .\n.Sort property can be any of the following (examples indicate default\
+          \ direction):\n.\n.| Property | Example | Sort Behavior |\n.| ----- | -------\
+          \ | ------------- |\n.| `NAME` | `sort=NAME:ASC` | Sort alphabetically by\
+          \ charity name |\n.| `RATING` | `sort=RATING:DESC` | Sort numerically by\
+          \ overall ratings score. Implies `rated=true`. |\n.| `RELEVANCE` | `sort=RELEVANCE:DESC`\
+          \ | Sort numerically by search relevance score |\n.\n.Currently only one\
+          \ sort property is allowed.\n.\n.Any of the following usages will result\
+          \ in an HTTP 400 error response:\n.\n.* Sort field is not one of the values\
+          \ listed above.\n.* Sort direction is provided and is neither `ASC` nor\
+          \ `DESC`.\n.* Sort field is `RATING` and `rated=false` is also specified.\n\
+          .* Sort field is `RELEVANCE` and the `search` parameter is not specified."
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Successful response, with a list of Organizations."
+          schema:
+            $ref: "#/definitions/OrganizationCollection"
+          examples:
+            application/json:
+            - charityNavigatorURL: "https://www.charitynavigator.org/?bay=search.summary&orgid=5954&utm_source=DataAPI&utm_content=b16336bb"
+              mission: "The MDI Biological Laboratory is a rapidly growing, independent\
+                \ non-profit biomedical research institution. Its mission is to improve\
+                \ human health and well-being through basic research, education, and\
+                \ development ventures that transform discoveries into cures."
+              websiteURL: "http://www.mdibl.org/"
+              tagLine: "Connecting Science, Environment, and Health"
+              charityName: "Mount Desert Island Biological Laboratory"
+              ein: "010202467"
+              orgID: 5954
+              currentRating:
+                score: 94.62
+                ratingID: 122841
+                publicationDate: "2017-07-01T04:00:00.000Z"
+                ratingImage:
+                  small: "https://d20umu42aunjpx.cloudfront.net/_gfx_/icons/stars/4starsb.png"
+                  large: "https://d20umu42aunjpx.cloudfront.net/_gfx_/icons/stars/4stars.png"
+                rating: 4
+                financialRating:
+                  score: 93.54
+                  rating: 4
+                accountabilityRating:
+                  score: 96
+                  rating: 4
+              category:
+                categoryName: "Research and Public Policy"
+                categoryID: 11
+                charityNavigatorURL: "https://www.charitynavigator.org/index.cfm?bay=search.categories&categoryid=11&utm_source=DataAPI&utm_content=b16336bb"
+                image: "https://d20umu42aunjpx.cloudfront.net/_gfx_/icons/categories/research.png"
+              cause:
+                causeID: 35
+                causeName: "Non-Medical Science & Technology Research"
+                charityNavigatorURL: "https://www.charitynavigator.org/index.cfm?bay=search.results&cgid=11&cuid=35&utm_source=DataAPI&utm_content=b16336bb"
+                image: "https://d20umu42aunjpx.cloudfront.net/_gfx_/causes/small/nonmedical.jpg"
+              irsClassification:
+                deductibility: "Contributions are deductible"
+                subsection: "501(c)(3)"
+                nteeType: "Science and Technology Research Institutes, Services"
+                foundationStatus: "Organization that normally receives no more than\
+                  \ one-third of its support from gross investment income and unrelated\
+                  \ business income and at the same time more than one-third of its\
+                  \ support from contributions, fees, and gross receipts related to\
+                  \ exempt purposes.\_ 509(a)(2)"
+                nteeSuffix: "0"
+                nteeClassification: "Biological, Life Science Research"
+                deductibilityDetail: null
+                nteeCode: "U50"
+                nteeLetter: "U"
+              mailingAddress:
+                country: null
+                stateOrProvince: "ME"
+                city: "Bar Harbor"
+                postalCode: "04609"
+                streetAddress1: "159 Old Bar Harbor Road"
+                streetAddress2: null
+              donationAddress:
+                country: null
+                stateOrProvince: "ME"
+                city: "Salisbury Cove"
+                postalCode: "04672"
+                streetAddress1: "PO Box 35"
+                streetAddress2: null
+              advisories:
+                severity: null
+                active:
+                  _rapid_links:
+                    related:
+                      href: "https://api.data.charitynavigator.org/v2/Organizations/010202467/Advisories?status=ACTIVE"
+              organization:
+                charityName: "Mount Desert Island Biological Laboratory"
+                ein: "010202467"
+                charityNavigatorURL: "https://www.charitynavigator.org/?bay=search.summary&orgid=5954&utm_source=DataAPI&utm_content=b16336bb"
+                _rapid_links:
+                  related:
+                    href: "https://api.data.charitynavigator.org/v2/Organizations/010202467"
+            - charityNavigatorURL: "https://www.charitynavigator.org/?bay=search.summary&orgid=4749&utm_source=DataAPI&utm_content=02c960ca"
+              mission: "New York Public Radio consists of WNYC 93.9 FM, AM 820, and\
+                \ WQXR 105.9 which are New York's premier public radio stations, broadcasting\
+                \ the finest programs from National Public Radio and Public Radio\
+                \ International, as well as a wide range of award-winning signature\
+                \ local programming. As America's most listened-to public radio stations,\
+                \ reaching over one million listeners each week, WNYC FM and AM extend\
+                \ New York City's cultural riches to the whole country and air the\
+                \ best national offerings from affiliate networks National Public\
+                \ Radio and Public Radio International. WNYC FM 93.9 broadcasts a\
+                \ broad range of daily news, talk, cultural and classical music programming,\
+                \ while WNYC AM 820 maintains a stronger focus on breaking news and\
+                \ international/ global news reporting."
+              websiteURL: "http://www.wnyc.org"
+              tagLine: "WNYC and WQXR - Making the mind more curious, the heart more\
+                \ tolerant, and the spirit more joyful"
+              charityName: "New York Public Radio"
+              ein: "133015230"
+              currentRating:
+                ratingImage:
+                  small: "https://d20umu42aunjpx.cloudfront.net/_gfx_/icons/stars/4starsb.png"
+                  large: "https://d20umu42aunjpx.cloudfront.net/_gfx_/icons/stars/4stars.png"
+                rating: 4
+              category:
+                categoryName: "Arts, Culture, Humanities"
+                categoryID: 2
+                charityNavigatorURL: "https://www.charitynavigator.org/index.cfm?bay=search.categories&categoryid=2&utm_source=DataAPI&utm_content=02c960ca"
+                image: "https://d20umu42aunjpx.cloudfront.net/_gfx_/icons/categories/arts.png"
+              cause:
+                causeID: 5
+                causeName: "Public Broadcasting and Media"
+                charityNavigatorURL: "https://www.charitynavigator.org/index.cfm?bay=search.results&cgid=2&cuid=5&utm_source=DataAPI&utm_content=02c960ca"
+                image: "https://d20umu42aunjpx.cloudfront.net/_gfx_/causes/small/public_radio.gif"
+              irsClassification:
+                deductibility: "Contributions are deductible"
+                subsection: "501(c)(3)"
+                nteeType: "Arts, Culture and Humanities"
+                foundationStatus: "Organization which receives a substantial part\
+                  \ of its support from a governmental unit or the general public\_\
+                  \_ 170(b)(1)(A)(vi)"
+                nteeSuffix: "0"
+                nteeClassification: "Radio"
+                deductibilityDetail: null
+                nteeCode: "A34"
+                nteeLetter: "A"
+              mailingAddress:
+                country: null
+                stateOrProvince: "NY"
+                city: "New York"
+                postalCode: "10013"
+                streetAddress1: "160 Varick Street"
+                streetAddress2: "8th Floor"
+              advisories:
+                severity: "Low"
+                active:
+                  _rapid_links:
+                    related:
+                      href: "https://api.data.charitynavigator.org/v2/Organizations/133015230/Advisories?status=ACTIVE"
+              organization:
+                charityName: "New York Public Radio"
+                ein: "133015230"
+                charityNavigatorURL: "https://www.charitynavigator.org/?bay=search.summary&orgid=4749&utm_source=DataAPI&utm_content=02c960ca"
+                _rapid_links:
+                  related:
+                    href: "https://api.data.charitynavigator.org/v2/Organizations/133015230"
+            - charityNavigatorURL: "https://www.charitynavigator.org/?bay=search.profile&ein=911720940&utm_source=DataAPI&utm_content=02c960ca"
+              mission: null
+              websiteURL: null
+              tagLine: null
+              charityName: "Children's Hunger Relief Aid"
+              ein: "911720940"
+              irsClassification:
+                deductibility: "Contributions are deductible"
+                subsection: "501(c)(3)"
+                nteeType: "Recreation, Sports, Leisure, Athletics"
+                foundationStatus: "Organization which receives a substantial part\
+                  \ of its support from a governmental unit or the general public\_\
+                  \_ 170(b)(1)(A)(vi)"
+                nteeSuffix: null
+                nteeClassification: "Amateur Sports Competitions"
+                deductibilityDetail: null
+                nteeCode: "N70"
+                nteeLetter: "N"
+              mailingAddress:
+                country: null
+                stateOrProvince: "WA"
+                city: "Seattle"
+                postalCode: "98198"
+                streetAddress1: "P.O. Box 13381"
+                streetAddress2: null
+              advisories:
+                severity: "High"
+                active:
+                  _rapid_links:
+                    related:
+                      href: "https://api.data.charitynavigator.org/v2/Organizations/911720940/Advisories?status=ACTIVE"
+              organization:
+                charityName: "Children's Hunger Relief Aid"
+                ein: "911720940"
+                charityNavigatorURL: "https://www.charitynavigator.org/?bay=search.profile&ein=911720940&utm_source=DataAPI&utm_content=02c960ca"
+                _rapid_links:
+                  related:
+                    href: "https://api.data.charitynavigator.org/v2/Organizations/911720940"
+          headers:
+            CN_Result_Count:
+              type: "integer"
+              format: "int32"
+              description: "Indicates the total number of objects available in the\
+                \ result set. May be\nused by the client in combination with `pageSize`\
+                \ to compute the number of pages\nof available data."
+        400:
+          description: "Invalid request. The ErrorInfo object should contain additional\
+            \ details."
+          schema:
+            $ref: "#/definitions/OrganizationCollection_searchOrganizations_response400"
+        404:
+          description: "Not found. This means there is no data that satisfies the\
+            \ request criteria,\nOr the specified `pageNum` is greater than the number\
+            \ of pages of data returned\nfrom the request query."
+          schema:
+            $ref: "#/definitions/OrganizationCollection_searchOrganizations_response404"
+  /Organizations/{ein}:
+    get:
+      tags:
+      - "Organization Object"
+      description: "Retrieve full detail of a single Organization. This is a composite\
+        \ set of\ninformation describing an organization that may engage in charitable\
+        \ work.\nNormally the Organization data structure includes a single legal\
+        \ entity, though\nlegal entity information may be excluded in exceptional\
+        \ cases."
+      operationId: "getOrganization"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "ein"
+        in: "path"
+        required: true
+        type: "string"
+      - name: "app_id"
+        in: "query"
+        description: "3Scale App ID: unique identifier for an application registered\
+          \ in the\nCharity Navigator  developer portal."
+        required: true
+        type: "string"
+        x-data-threescale-name: "app_ids"
+      - name: "app_key"
+        in: "query"
+        description: "3Scale App Key: a secret key to authenticate the assigned App\
+          \ ID."
+        required: true
+        type: "string"
+        x-data-threescale-name: "app_keys"
+      responses:
+        200:
+          description: "A composite set of information describing an organization\
+            \ that may engage in\ncharitable work. Normally the Organization data\
+            \ structure includes a single\nlegal entity, though legal entity information\
+            \ may be excluded in exceptional\ncases."
+          schema:
+            $ref: "#/definitions/OrganizationObject"
+          examples:
+            application/json:
+              ein: "411867244"
+              orgID: 9037
+              charityName: "Home for Life"
+              tagLine: "Loving care, a place to belong, a home for life"
+              irsClassification:
+                subsection: "501(c)(3)"
+                foundationStatus: "Organization which receives a substantial part\
+                  \ of its support from a governmental unit or the general public\_\
+                  \_ 170(b)(1)(A)(vi)"
+                deductibility: "Deductible"
+              websiteURL: "http://www.homeforlife.org/"
+              charityNavigatorURL: "https://www.charitynavigator.org/index.cfm?bay=search.summary&orgid=9037"
+              category:
+                categoryID: "1"
+                categoryName: "Animals"
+                image: "https://d20umu42aunjpx.cloudfront.net/_gfx_/icons/categories/animals.png"
+                charityNavigatorURL: "https://www.charitynavigator.org/index.cfm?bay=search.results.&cgid=1"
+              cause:
+                causeID: "2"
+                causeName: "Animal Rights, Welfare, and Services"
+                image: "https://d20umu42aunjpx.cloudfront.net/_gfx_/causes/small/animal_rights.gif"
+                charityNavigatorURL: "https://www.charitynavigator.org/index.cfm?bay=search.results&cgid=1&cuid=2"
+              mission: "Home For Life is an expression of a new kind of animal shelter\
+                \ - the long-term animal sanctuary. We provide animals with loving\
+                \ care, a nurturing environment that is safe and stable, a place to\
+                \ belong- a home for life. We provide lifetime care for cats and dogs\
+                \ with special needs who cannot find a home, but who can still lead\
+                \ a quality life. We believe that animals should live in a setting\
+                \ that is appropriately scaled to allow for individual attention and\
+                \ specialized care. This is why Home For Life is able to give its\
+                \ residents a quality life and not just a warehoused existence."
+              streetAddress1: "P.O. Box 847"
+              city: "Stillwater"
+              state: "MN"
+              zip: "55082"
+              phoneNumber: "8002525918"
+              generalEmail: "info@homeforlife.org"
+              activeAdvisories:
+              - _rapid_links:
+                  related:
+                    href: "./Advisories/1234"
+              removedAdvisories:
+              - _rapid_links:
+                  related:
+                    href: "./Advisories/1234"
+              currentBoardChair:
+                name: "Joseph Carnahan"
+                title: "Chairman"
+              currentCEO:
+                name: "Felicia Lozaro"
+                title: "Executive Director"
+              currentRating:
+                _rapid_links:
+                  related:
+                    href: "./ratings/1234"
+                score: 73.1
+                rating: 1
+                ratingImage: "http://charityNavigator.org/images/1star.png"
+        400:
+          description: "Invalid request. The ErrorInfo object should contain additional\
+            \ details."
+          schema:
+            $ref: "#/definitions/OrganizationObject_getOrganization_response400"
+        404:
+          description: "Not found.  Indicates an invalid or non-existent path parameter\
+            \ value."
+          schema:
+            $ref: "#/definitions/OrganizationObject_getOrganization_response404"
+  /Organizations/{ein}/Ratings:
+    get:
+      tags:
+      - "Rating Collection (Content Plan)"
+      description: "Retrieve all Charity Navigator ratings for a single organization.\
+        \ <br/>\n![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+        \"Included with the paid Content Subscription.\")"
+      operationId: "getRatings"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "ein"
+        in: "path"
+        required: true
+        type: "string"
+      - name: "app_id"
+        in: "query"
+        description: "3Scale App ID: unique identifier for an application registered\
+          \ in the\nCharity Navigator  developer portal."
+        required: true
+        type: "string"
+        x-data-threescale-name: "app_ids"
+      - name: "app_key"
+        in: "query"
+        description: "3Scale App Key: a secret key to authenticate the assigned App\
+          \ ID."
+        required: true
+        type: "string"
+        x-data-threescale-name: "app_keys"
+      - name: "pageSize"
+        in: "query"
+        description: "Number of objects to return in a single response message. Used\
+          \ in\ncombination with `pageNum` for paged responses. Default value is 100.\
+          \  If\nspecified, must be an integer value between 1 and 1,000."
+        required: false
+        type: "integer"
+        format: "int32"
+      - name: "pageNum"
+        in: "query"
+        description: "Page number to return, in case the number of available objects\
+          \ in the result\nset is greater than the specified or default `pageSize`.\
+          \ Default value is 1.\nIf the value of pageNum is greater than the number\
+          \ of pages in the result set,\nthe method will return a 404 error. If the\
+          \ requested starting position, computed\nas `((pageNum-1) * pageSize) +\
+          \ 1`, is greater than the maximum supported result\nsize of 10,000 objects,\
+          \ the method will return a 400 error."
+        required: false
+        type: "integer"
+        format: "int32"
+      responses:
+        200:
+          description: "Successful response, with a list of Ratings."
+          schema:
+            $ref: "#/definitions/RatingCollection"
+          examples:
+            application/json:
+            - _rapid_links:
+                canonical:
+                  href: "https://cntest.getsandbox.com/v1/Organizations/1324/Ratings/234"
+              score: 87.23
+              rating: 2
+              ratingImage:
+                small: "http://CharityNavigator.org/images/2star-small.png"
+                large: "http://CharityNavigator.org/images/2star-large.png"
+            - _rapid_links:
+                canonical:
+                  href: "https://cntest.getsandbox.com/v1/Organizations/1324/Ratings/823"
+              score: 93.23
+              rating: 3
+              ratingImage:
+                small: "http://CharityNavigator.org/images/3star-small.png"
+                large: "http://CharityNavigator.org/images/3star-large.png"
+          headers:
+            CN_Result_Count:
+              type: "integer"
+              format: "int32"
+              description: "Indicates the total number of objects available in the\
+                \ result set. May be\nused by the client in combination with `pageSize`\
+                \ to compute the number of pages\nof available data."
+        400:
+          description: "Invalid request. The ErrorInfo object should contain additional\
+            \ details."
+          schema:
+            $ref: "#/definitions/RatingCollection_getRatings_response400"
+        404:
+          description: "Not found. This means there is no data that satisfies the\
+            \ request criteria,\nOr the specified `pageNum` is greater than the number\
+            \ of pages of data returned\nfrom the request query."
+          schema:
+            $ref: "#/definitions/RatingCollection_getRatings_response404"
+  /Organizations/{ein}/Ratings/{RatingID}:
+    get:
+      tags:
+      - "Rating Object (Content Plan)"
+      description: "Retrieve a single Rating object for an Organization. Each rating\
+        \ is listed\nonce, under its primary `referenceOrganization`. Note that the\
+        \ rating may apply\nto other organizations, and this is represented by `includedOrganizations`,\n\
+        which is a collection of hyperlinks to all of the organizations to which the\n\
+        rating applies.\nThe rating is a point-in-time assessment provided by Charity\
+        \ Navigator, along\nwith related metrics and ratios taken from financial statements\
+        \ for a fiscal\nyear, on which the rating is based. <br/> ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+        \"Included with the paid Content Subscription.\")"
+      operationId: "getRating"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "ein"
+        in: "path"
+        required: true
+        type: "string"
+      - name: "RatingID"
+        in: "path"
+        required: true
+        type: "string"
+      - name: "app_id"
+        in: "query"
+        description: "3Scale App ID: unique identifier for an application registered\
+          \ in the\nCharity Navigator  developer portal."
+        required: true
+        type: "string"
+        x-data-threescale-name: "app_ids"
+      - name: "app_key"
+        in: "query"
+        description: "3Scale App Key: a secret key to authenticate the assigned App\
+          \ ID."
+        required: true
+        type: "string"
+        x-data-threescale-name: "app_keys"
+      responses:
+        200:
+          description: "A point-in-time rating provided by Charity Navigator, along\
+            \ with related\nmetrics and ratios taken from financial statements for\
+            \ a fiscal year, on which\nthe rating is based."
+          schema:
+            $ref: "#/definitions/RatingObject"
+          examples:
+            application/json:
+              ratingID: "string"
+              includedOrganizations:
+              - _rapid_links:
+                  related:
+                    href: "https://cntest.getsandbox.com/v1/Organizations/1324"
+              - _rapid_links:
+                  related:
+                    href: "https://cntest.getsandbox.com/v1/Organizations/234987"
+              referenceOrganization:
+                _rapid_links:
+                  related:
+                    href: "https://cntest.getsandbox.com/v1/Organizations/1324"
+              score: 98.2
+              rating: 4
+              ratingImage:
+                small: "http://charityNavigator.org/images/4star-small.png"
+                large: "http://charityNavigator.org/images/4star-large.png"
+              form990:
+                fundraisingExpenses: 122021.0
+                administrativeExpenses: 389283.0
+                programExpenses: 234987.0
+                totalExpenses: 23432.22
+                totalRevenue: 234874.0
+                totalNetAssets: 987000.0
+              financialRating:
+                score: 96.9
+                rating: 4
+                performanceMetrics:
+                  fundraisingEfficiency: 0.06
+                  fundraisingExpensesRatio: 0.055
+                  programExpensesGrowth: -0.0612
+                  programExpensesRatio: 0.789
+                  administrationExpensesRatio: 0.154
+                  liabilitiesToAssetsRatio: 2.365
+                  workingCapitalRatio: -0.93
+                  primaryRevenueGrowth: 23.23
+              accountabilityRating:
+                score: 96
+                rating: 4
+                accountabilityTests:
+                  boardListStatus: "Pass"
+                  staffListStatus: "Fail"
+                  auditedFinancialStatus: "Pass"
+                  form990Status: "Pass"
+                  privacyStatus: "Opt-Out"
+                  loansToOrFromOfficers: "Pass"
+                  loansToOfficers: "Pass"
+                  loansFromOfficers: "Pass"
+                  materialDiversionOfAssets: "Pass"
+                  boardMeetingMinutes: "Pass"
+                  distributes990ToBoard: "Pass"
+                  conflictOfInterestPolicy: "Pass"
+                  whistleBlowerPolicy: "Pass"
+                  recordsRetentionPolicy: "Pass"
+                  reportsCEOAndSalary: "Pass"
+                  ceoCompensationProcedure: "Pass"
+                  compensatesBoard: "Pass"
+                  independentAudit: "Pass"
+                  independentBoard: "Pass"
+              publicationDate: "2017-05-12"
+        400:
+          description: "Invalid request. The ErrorInfo object should contain additional\
+            \ details."
+          schema:
+            $ref: "#/definitions/RatingObject_getRating_response400"
+        404:
+          description: "Not found.  Indicates an invalid or non-existent path parameter\
+            \ value."
+          schema:
+            $ref: "#/definitions/RatingObject_getRating_response404"
+  /Organizations/{ein}/Advisories:
+    get:
+      tags:
+      - "Advisory Collection"
+      description: "Retrieve the full set of Charity Navigator advisories for a specified\n\
+        organization. An advisory is a cautionary communication from Charity Navigator,\n\
+        advising of unusual events or behavior related to a known organization."
+      operationId: "getAdvisories"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "ein"
+        in: "path"
+        required: true
+        type: "string"
+      - name: "app_id"
+        in: "query"
+        description: "3Scale App ID: unique identifier for an application registered\
+          \ in the\nCharity Navigator  developer portal."
+        required: true
+        type: "string"
+        x-data-threescale-name: "app_ids"
+      - name: "app_key"
+        in: "query"
+        description: "3Scale App Key: a secret key to authenticate the assigned App\
+          \ ID."
+        required: true
+        type: "string"
+        x-data-threescale-name: "app_keys"
+      - name: "pageSize"
+        in: "query"
+        description: "Number of objects to return in a single response message. Used\
+          \ in\ncombination with `pageNum` for paged responses. Default value is 100.\
+          \  If\nspecified, must be an integer value between 1 and 1,000."
+        required: false
+        type: "integer"
+        format: "int32"
+      - name: "pageNum"
+        in: "query"
+        description: "Page number to return, in case the number of available objects\
+          \ in the result\nset is greater than the specified or default `pageSize`.\
+          \ Default value is 1.\nIf the value of pageNum is greater than the number\
+          \ of pages in the result set,\nthe method will return a 404 error. If the\
+          \ requested starting position, computed\nas `((pageNum-1) * pageSize) +\
+          \ 1`, is greater than the maximum supported result\nsize of 10,000 objects,\
+          \ the method will return a 400 error."
+        required: false
+        type: "integer"
+        format: "int32"
+      - name: "status"
+        in: "query"
+        description: ".An optional filter parameter to limit the Advisories returned,\
+          \ based on\n.status:\n.\n.| Status Value | Advisories Included         \
+          \                        |\n.| ------------ | ---------------------------------------------------\
+          \ |\n.| ALL | All advisories included, regardless of status.      |\n.|\
+          \ ACTIVE       | Includes only advisories that are currently active. |\n\
+          .| REMOVED      | Includes only advisories that have been removed.    |\n\
+          .\n.Omitting the status property is the equivalent of specifying ALL. Any\
+          \ value\n.other than the ones listed above will result in an HTTP error\
+          \ 400."
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Successful response, with a list of Advisorites."
+          schema:
+            $ref: "#/definitions/AdvisoryCollection"
+          examples:
+            application/json:
+            - advisoryID: "97832"
+              organization:
+                _rapid_links:
+                  related:
+                    href: "https://cntest.getsandbox.com/v1/Organizations/1324"
+                ein: "1234"
+                charityName: "Happy Trails"
+              severity: "High"
+              datePublished: "2017-05-12"
+              dateRemoved: "2017-05-12"
+              dateModified: "2017-05-12"
+              sources:
+              - datePublished: "2017-05-12"
+                dateRemoved: "2017-05-12"
+                dateModified: "2017-05-12"
+                publisher: "Financial Times"
+                url: "http://foobar.fintimes.com/stories/1234"
+                summary: "Donors be warned, bad stuff suspected at Happy Trails..."
+              - datePublished: "2017-05-12"
+                dateRemoved: "2017-05-12"
+                dateModified: "2017-05-12"
+                publisher: "Charity Skeptics Weekly"
+                url: "http://charityskepticsweekly.com/stories/1234"
+                summary: "Yet more proof that all charities are run by crooks, and\
+                  \ the moon is made of green cheese..."
+            - advisoryID: "string"
+              organization:
+                _rapid_links:
+                  related:
+                    href: "https://cntest.getsandbox.com/v1/Organizations/1324"
+                ein: "1234"
+                charityName: "Happy Trails"
+              severity: "Low"
+              datePublished: "2014-02-12"
+              dateRemoved: "2014-04-15"
+              dateModified: "2014-04-12"
+              sources:
+              - datePublished: "2014-02-12"
+                dateRemoved: "2014-04-15"
+                dateModified: "2014-04-12"
+                publisher: "Jaw Flapper News"
+                url: "http://jawflapper.com/feed/98723u4"
+                summary: "Notorious celeb tweets derogatory statement about Happy\
+                  \ Trails."
+          headers:
+            CN_Result_Count:
+              type: "integer"
+              format: "int32"
+              description: "Indicates the total number of objects available in the\
+                \ result set. May be\nused by the client in combination with `pageSize`\
+                \ to compute the number of pages\nof available data."
+        400:
+          description: "Invalid request. The ErrorInfo object should contain additional\
+            \ details."
+          schema:
+            $ref: "#/definitions/AdvisoryCollection_getAdvisories_response400"
+        404:
+          description: "Not found. This means there is no data that satisfies the\
+            \ request criteria,\nOr the specified `pageNum` is greater than the number\
+            \ of pages of data returned\nfrom the request query."
+          schema:
+            $ref: "#/definitions/AdvisoryCollection_getAdvisories_response404"
+  /Organizations/{ein}/Advisories/{AdvisoryID}:
+    get:
+      tags:
+      - "Advisory Object"
+      description: "Retrieve full details of a single Advisory, under a given organization.\
+        \ An\nadvisory is a cautionary communication from Charity Navigator, advising\
+        \ of\nunusual events or behavior related to a known organization."
+      operationId: "getAdvisory"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "ein"
+        in: "path"
+        required: true
+        type: "string"
+      - name: "AdvisoryID"
+        in: "path"
+        required: true
+        type: "string"
+      - name: "app_id"
+        in: "query"
+        description: "3Scale App ID: unique identifier for an application registered\
+          \ in the\nCharity Navigator  developer portal."
+        required: true
+        type: "string"
+        x-data-threescale-name: "app_ids"
+      - name: "app_key"
+        in: "query"
+        description: "3Scale App Key: a secret key to authenticate the assigned App\
+          \ ID."
+        required: true
+        type: "string"
+        x-data-threescale-name: "app_keys"
+      responses:
+        200:
+          description: "Successful response, with the requested object instance."
+          schema:
+            $ref: "#/definitions/Advisory"
+          examples:
+            application/json:
+              advisoryID: "97832"
+              organization:
+                _rapid_links:
+                  related:
+                    href: "https://cntest.getsandbox.com/v1/Organizations/1324"
+                ein: "1234"
+                charityName: "Happy Trails"
+              severity: "High"
+              datePublished: "2017-05-12"
+              dateRemoved: "2017-05-12"
+              dateModified: "2017-05-12"
+              sources:
+              - datePublished: "2017-05-12"
+                dateRemoved: "2017-05-12"
+                dateModified: "2017-05-12"
+                publisher: "Financial Times"
+                url: "http://foobar.fintimes.com/stories/1234"
+                summary: "Donors be warned, bad stuff suspected at Happy Trails..."
+              - datePublished: "2017-05-12"
+                dateRemoved: "2017-05-12"
+                dateModified: "2017-05-12"
+                publisher: "Charity Skeptics Weekly"
+                url: "http://charityskepticsweekly.com/stories/1234"
+                summary: "Yet more proof that all charities are run by crooks, and\
+                  \ the moon is made of green cheese..."
+        400:
+          description: "Invalid request. The ErrorInfo object should contain additional\
+            \ details."
+          schema:
+            $ref: "#/definitions/AdvisoryObject_getAdvisory_response400"
+        404:
+          description: "Not found.  Indicates an invalid or non-existent path parameter\
+            \ value."
+          schema:
+            $ref: "#/definitions/AdvisoryObject_getAdvisory_response404"
+  /Lists:
+    get:
+      tags:
+      - "List Collection (Content Plan)"
+      description: "Retrieve a set of Lists defined in Charity Navigator. Each entry\
+        \ in this\ncollection is a curated or generated list of organizations, published\
+        \ by Charity\nNavigator. <br/> ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+        \"Included with the paid Content Subscription.\")"
+      operationId: "getLists"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "app_id"
+        in: "query"
+        description: "3Scale App ID: unique identifier for an application registered\
+          \ in the\nCharity Navigator  developer portal."
+        required: true
+        type: "string"
+        x-data-threescale-name: "app_ids"
+      - name: "app_key"
+        in: "query"
+        description: "3Scale App Key: a secret key to authenticate the assigned App\
+          \ ID."
+        required: true
+        type: "string"
+        x-data-threescale-name: "app_keys"
+      - name: "pageSize"
+        in: "query"
+        description: "Number of objects to return in a single response message. Used\
+          \ in\ncombination with `pageNum` for paged responses. Default value is 100.\
+          \  If\nspecified, must be an integer value between 1 and 1,000."
+        required: false
+        type: "integer"
+        format: "int32"
+      - name: "pageNum"
+        in: "query"
+        description: "Page number to return, in case the number of available objects\
+          \ in the result\nset is greater than the specified or default `pageSize`.\
+          \ Default value is 1.\nIf the value of pageNum is greater than the number\
+          \ of pages in the result set,\nthe method will return a 404 error. If the\
+          \ requested starting position, computed\nas `((pageNum-1) * pageSize) +\
+          \ 1`, is greater than the maximum supported result\nsize of 10,000 objects,\
+          \ the method will return a 400 error."
+        required: false
+        type: "integer"
+        format: "int32"
+      responses:
+        200:
+          description: "Successful response, with a list of Advisorites."
+          schema:
+            $ref: "#/definitions/ListCollection"
+          examples:
+            application/json:
+            - _rapid_links:
+                canonical:
+                  href: "https://cntest.getsandbox.com/v1/lists/148"
+              listID: "138"
+              listName: "Top 10 Most Followed Charities"
+              listType: "Top List"
+            - _rapid_links:
+                canonical:
+                  href: "https://cntest.getsandbox.com/v1/Organizations/149"
+              listID: "149"
+              listName: "Top 10 Disaster Relief Charities"
+              listType: "Top List"
+          headers:
+            CN_Result_Count:
+              type: "integer"
+              format: "int32"
+              description: "Indicates the total number of objects available in the\
+                \ result set. May be\nused by the client in combination with `pageSize`\
+                \ to compute the number of pages\nof available data."
+        400:
+          description: "Invalid request. The ErrorInfo object should contain additional\
+            \ details."
+          schema:
+            $ref: "#/definitions/ListCollection_getLists_response400"
+        404:
+          description: "Not found. This means there is no data that satisfies the\
+            \ request criteria,\nOr the specified `pageNum` is greater than the number\
+            \ of pages of data returned\nfrom the request query."
+          schema:
+            $ref: "#/definitions/ListCollection_getLists_response404"
+  /Lists/{ListID}:
+    get:
+      tags:
+      - "List Object (Content Plan)"
+      description: "Retrieve a curated or generated list of organizations, published\
+        \ by Charity\nNavigator. <br/> ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+        \"Included with the paid Content Subscription.\")"
+      operationId: "getList"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "ListID"
+        in: "path"
+        required: true
+        type: "string"
+      - name: "app_id"
+        in: "query"
+        description: "3Scale App ID: unique identifier for an application registered\
+          \ in the\nCharity Navigator  developer portal."
+        required: true
+        type: "string"
+        x-data-threescale-name: "app_ids"
+      - name: "app_key"
+        in: "query"
+        description: "3Scale App Key: a secret key to authenticate the assigned App\
+          \ ID."
+        required: true
+        type: "string"
+        x-data-threescale-name: "app_keys"
+      responses:
+        200:
+          description: "Successful response, with the requested object instance."
+          schema:
+            $ref: "#/definitions/List"
+          examples:
+            application/json:
+              listID: "138"
+              listName: "Top 10 Most Followed Charities"
+              listType: "Top List"
+              description: "Since Charity Navigator launched in 2002, hundreds of\
+                \ thousands of donors have become registered users of our site. Registered\
+                \ users have access to (free) premier tools on our site including\
+                \ the ability to share a list of charities, compare charities, view\
+                \ historical data and subscribe to our monthly, email newsletter.\
+                \ Registered users can also create personal portfolios of charities\
+                \ to track the performance of their favorite charities overtime. The\
+                \ 10 charities that have been most frequently added to registered\
+                \ users’ portfolios are listed below. They are ranked by the number\
+                \ of portfolios that include them."
+              image: "http://charitynavigator.org/images/Top10.png"
+              charityNavigatorURL: "https://www.charitynavigator.org/index.cfm?bay=topten.detail&listid=148"
+              groups:
+              - groupName: null
+                groupDescription: null
+                organizations:
+                - _rapid_links:
+                    related:
+                      href: "https://cntest.getsandbox.com/v1/Organizations/3628"
+                - _rapid_links:
+                    related:
+                      href: "https://cntest.getsandbox.com/v1/Organizations/3277"
+                - _rapid_links:
+                    related:
+                      href: "https://cntest.getsandbox.com/v1/Organizations/4208"
+                - _rapid_links:
+                    related:
+                      href: "https://cntest.getsandbox.com/v1/Organizations/4770"
+                - _rapid_links:
+                    related:
+                      href: "https://cntest.getsandbox.com/v1/Organizations/4617"
+                - _rapid_links:
+                    related:
+                      href: "https://cntest.getsandbox.com/v1/Organizations/4207"
+                - _rapid_links:
+                    related:
+                      href: "https://cntest.getsandbox.com/v1/Organizations/4438"
+                - _rapid_links:
+                    related:
+                      href: "https://cntest.getsandbox.com/v1/Organizations/12847"
+                - _rapid_links:
+                    related:
+                      href: "https://cntest.getsandbox.com/v1/Organizations/4768"
+                - _rapid_links:
+                    related:
+                      href: "https://cntest.getsandbox.com/v1/Organizations/3286"
+        400:
+          description: "Invalid request. The ErrorInfo object should contain additional\
+            \ details."
+          schema:
+            $ref: "#/definitions/ListObject_getList_response400"
+        404:
+          description: "Not found.  Indicates an invalid or non-existent path parameter\
+            \ value."
+          schema:
+            $ref: "#/definitions/ListObject_getList_response404"
+  /Categories:
+    get:
+      tags:
+      - "Category Collection (Content Plan)"
+      description: "Returns metadata for Charity Navigator's classification hierarchy\
+        \ for\ncharitable Organizations. Category is the top-level classifier, and\
+        \ each\ncategory may contain a number of Causes. <br/> ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+        \"Included with the paid Content Subscription.\")"
+      operationId: "getCategories"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "app_id"
+        in: "query"
+        description: "3Scale App ID: unique identifier for an application registered\
+          \ in the\nCharity Navigator  developer portal."
+        required: true
+        type: "string"
+        x-data-threescale-name: "app_ids"
+      - name: "app_key"
+        in: "query"
+        description: "3Scale App Key: a secret key to authenticate the assigned App\
+          \ ID."
+        required: true
+        type: "string"
+        x-data-threescale-name: "app_keys"
+      responses:
+        200:
+          description: "In Charity Navigator's taxonomy, Category is the most general\
+            \ level of\nclassification of Organziations."
+          schema:
+            $ref: "#/definitions/CategoryCollection"
+  /Advisory:
+    get:
+      tags:
+      - "Active Advisory Collection"
+      description: "Retrieve the full set of Charity Navigator advisories for a specified\n\
+        organization. An advisory is a cautionary communication from Charity Navigator,\n\
+        advising of unusual events or behavior related to a known organization."
+      operationId: "getAllActiveAdvisories"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "app_id"
+        in: "query"
+        description: "3Scale App ID: unique identifier for an application registered\
+          \ in the\nCharity Navigator  developer portal."
+        required: true
+        type: "string"
+        x-data-threescale-name: "app_ids"
+      - name: "app_key"
+        in: "query"
+        description: "3Scale App Key: a secret key to authenticate the assigned App\
+          \ ID."
+        required: true
+        type: "string"
+        x-data-threescale-name: "app_keys"
+      - name: "pageSize"
+        in: "query"
+        description: "Number of organizations to return in a single response message.\
+          \ Used in\ncombination with `pageNum` for paged responses. Default value\
+          \ is 100.  If\nspecified, must be an integer value between 1 and 1,000."
+        required: false
+        type: "integer"
+        format: "int32"
+      - name: "pageNum"
+        in: "query"
+        description: "Page number to return, in case the number of available objects\
+          \ in the result\nset is greater than the specified or default `pageSize`.\
+          \ Default value is 1.\nIf the value of pageNum is greater than the number\
+          \ of pages in the result set,\nthe method will return a 404 error. If the\
+          \ requested starting position, computed\nas `((pageNum-1) * pageSize) +\
+          \ 1`, is greater than the maximum supported result\nsize of 10,000 objects,\
+          \ the method will return a 400 error."
+        required: false
+        type: "integer"
+        format: "int32"
+      responses:
+        200:
+          description: "Successful response, with a list of Advisorites."
+          schema:
+            $ref: "#/definitions/ActiveAdvisoryCollection"
+          examples:
+            application/json:
+            - mailingAddress:
+                stateOrProvince: "WI"
+                city: "Stoughton"
+              organization:
+                charityNavigatorURL: "https://www.charitynavigator.org/?bay=search.profile&ein=030444849&utm_source=DataAPI&utm_content=b16336bb"
+                charityName: "Country Animal Haven"
+                ein: "030444849"
+              advisories:
+                severity: "High"
+                active:
+                  _rapid_links:
+                    related:
+                      href: "https://api.data.charitynavigator.org/v2/Organizations/030444849/Advisories?status=ACTIVE"
+            - mailingAddress:
+                stateOrProvince: "NH"
+                city: "Concord"
+              organization:
+                charityNavigatorURL: "https://www.charitynavigator.org/?bay=search.profile&ein=020136360&utm_source=DataAPI&utm_content=b16336bb"
+                charityName: "New Hampshire Sheep and Wool Growers Association"
+                ein: "020136360"
+              advisories:
+                severity: "High"
+                active:
+                  _rapid_links:
+                    related:
+                      href: "https://api.data.charitynavigator.org/v2/Organizations/020136360/Advisories?status=ACTIVE"
+            - mailingAddress:
+                stateOrProvince: "FL"
+                city: null
+              organization:
+                charityNavigatorURL: "https://www.charitynavigator.org/?bay=search.profile&ein=000000085&utm_source=DataAPI&utm_content=b16336bb"
+                charityName: "One Door for Education, Inc."
+                ein: "000000085"
+              advisories:
+                severity: "High"
+                active:
+                  _rapid_links:
+                    related:
+                      href: "https://api.data.charitynavigator.org/v2/Organizations/000000085/Advisories?status=ACTIVE"
+          headers:
+            CN_Result_Count:
+              type: "integer"
+              format: "int32"
+              description: "Indicates the total number of objects available in the\
+                \ result set. May be\nused by the client in combination with `pageSize`\
+                \ to compute the number of pages\nof available data."
+        400:
+          description: "Invalid request. The ErrorInfo object should contain additional\
+            \ details."
+          schema:
+            $ref: "#/definitions/ActiveAdvisoryCollection_getAllActiveAdvisories_response400"
+        404:
+          description: "Not found. This means there is no data that satisfies the\
+            \ request criteria,\nOr the specified `pageNum` is greater than the number\
+            \ of pages of data returned\nfrom the request query."
+          schema:
+            $ref: "#/definitions/ActiveAdvisoryCollection_getAllActiveAdvisories_response404"
+definitions:
+  OrganizationCollection:
+    type: "array"
+    items:
+      $ref: "#/definitions/OrganizationCollection_item"
+  OrganizationCollection_item:
+    type: "object"
+    required:
+    - "ein"
+    - "organization"
+    properties:
+      ein:
+        type: "string"
+        description: "The federal Employer Identification Number for the charitable\
+          \ organization.\nMay be set to a system-assigned value in cases where the\
+          \ organization is\nfictitious, or the real EIN is not available."
+        minLength: 1
+      orgID:
+        type: "integer"
+        description: "Internal identifier assigned by Charity Navigator. Only rated\
+          \ charities have\nan orgID. <br/> ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+      charityName:
+        type: "string"
+        description: "Name of the charitable organization."
+        minLength: 1
+      tagLine:
+        type: "string"
+        description: "Tagline describing the charity."
+        minLength: 1
+      websiteURL:
+        type: "string"
+        description: "URL of the organization's website. <br/> ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+        minLength: 1
+      charityNavigatorURL:
+        type: "string"
+        minLength: 1
+      mission:
+        type: "string"
+        description: "The organization's mission statement."
+        minLength: 1
+      currentRating:
+        $ref: "#/definitions/OrganizationCollection_currentRating"
+      category:
+        $ref: "#/definitions/OrganizationCollection_category"
+      cause:
+        $ref: "#/definitions/OrganizationCollection_cause"
+      irsClassification:
+        $ref: "#/definitions/OrganizationCollection_irsClassification"
+      mailingAddress:
+        $ref: "#/definitions/OrganizationCollection_mailingAddress"
+      donationAddress:
+        $ref: "#/definitions/OrganizationCollection_donationAddress"
+      advisories:
+        $ref: "#/definitions/OrganizationCollection_advisories"
+      organization:
+        $ref: "#/definitions/OrganizationLink"
+    description: "The full collection of organizations in Charity Navigator. Allows\
+      \ paged\nretrieval, simple and advanced searching."
+  OrganizationCollection_currentRating:
+    type: "object"
+    properties:
+      ratingID:
+        type: "string"
+        description: "Unique identifier for this Rating. <br/> ![Rated Charities\n\
+          Only](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+        minLength: 1
+      score:
+        type: "number"
+        description: "Overall score, out of a possible 100, based on a two-dimensional\
+          \ analysis of\nfinancial health and accountability.\n[Learn\nMore](https://www.charitynavigator.org/index.cfm?bay=content.view&cpid=1287)\n\
+          ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+      rating:
+        type: "integer"
+        description: "Overall rating, on a four-star scale, based on a two-dimensional\
+          \ analysis of\nfinancial health and accountability.\n[Learn\nMore](https://www.charitynavigator.org/index.cfm?bay=content.view&cpid=1287)\n\
+          ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\")"
+      publicationDate:
+        type: "string"
+        format: "date"
+        description: "Date the Rating was published ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\") <br/>"
+      financialRating:
+        $ref: "#/definitions/OrganizationCollection_currentRating_financialRating"
+      accountabilityRating:
+        $ref: "#/definitions/OrganizationCollection_currentRating_accountabilityRating"
+      ratingImage:
+        $ref: "#/definitions/IconSet"
+      form990:
+        $ref: "#/definitions/Form990"
+    description: "Current rating for the organization. <br/> ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+      \"Only available for rated charities.\")"
+  OrganizationCollection_currentRating_financialRating:
+    type: "object"
+    properties:
+      score:
+        type: "number"
+        description: "Overall financial score, out of a possible 100, based on a set\
+          \ of individual\nmeasures of financial health.\n[Learn\nMore](https://www.charitynavigator.org/index.cfm?bay=content.view&cpid=35)\n\
+          ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+      rating:
+        type: "integer"
+        description: "Overall financial rating, on a four-star scale.\n[Learn\nMore](https://www.charitynavigator.org/index.cfm?bay=content.view&cpid=1287)\n\
+          ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+    description: "Financial Score, Rating, and performance metrics. <br/> ![Rated\
+      \ Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+      \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+      \"Included with the paid Content Subscription.\")"
+  OrganizationCollection_currentRating_accountabilityRating:
+    type: "object"
+    properties:
+      score:
+        type: "number"
+        description: "Overall accountability score, out of a possible 100, based on\
+          \ a set of\nindividual measures of accountability and transparency.\n[Learn\n\
+          More](https://www.charitynavigator.org/index.cfm?bay=content.view&cpid=1093)\n\
+          <br/> ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+      rating:
+        type: "integer"
+        description: "Overall accountability and transparency rating, on a four-star\
+          \ scale.\n[Learn\nMore](https://www.charitynavigator.org/index.cfm?bay=content.view&cpid=1283)\n\
+          ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+    description: "Accountability and Transparency Score, Rating, and test indicators.\
+      \ <br/>\n![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+      \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+      \"Included with the paid Content Subscription.\")"
+  IconSet:
+    type: "object"
+    properties:
+      small:
+        type: "string"
+        minLength: 1
+      large:
+        type: "string"
+        minLength: 1
+    description: "A set of URLs different sized icons with the same underlying meaning."
+  Form990:
+    type: "object"
+    properties:
+      fundraisingExpenses:
+        type: "number"
+        description: "Fundraising expenses as reported on the income statement for\
+          \ the rating\nperiod. This measure reflects what a charity spends to raise\
+          \ money. Fundraising\nexpenses can include campaign printing, publicity,\
+          \ mailing, and staffing and\ncosts incurred in soliciting donations, memberships,\
+          \ and grants.\n[Learn\nMore](https://www.charitynavigator.org/index.cfm?bay=glossary.word&word=Fundraising%20Expenses&mid=2&cid=21&print=1)\n\
+          ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+      administrativeExpenses:
+        type: "number"
+        description: "Administrative expenses as reported on the income statement\
+          \ for the rating\nperiod. This measure reflects what percent of its total\
+          \ budget a charity spends\non overhead, administrative staff and associated\
+          \ costs, and organizational\nmeetings.\n[Learn\nMore](https://www.charitynavigator.org/index.cfm?bay=glossary.word&word=Administrative%20Expenses&mid=3&cid=21&print=1)\n\
+          ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+      programExpenses:
+        type: "number"
+        description: "Program expenses as reported on the income statement for the\
+          \ rating period.\nThis measure reflects what a charity spends to raise money.\
+          \ Fundraising expenses\ncan include campaign printing, publicity, mailing,\
+          \ and staffing and costs\nincurred in soliciting donations, memberships,\
+          \ and grants.\n[Learn\nMore](https://www.charitynavigator.org/index.cfm?bay=glossary.word&word=Program%20Expenses&mid=7&cid=21&print=1)\n\
+          ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+      totalExpenses:
+        type: "number"
+        description: "Total functional expenses, computed as the sum of program expenses,\n\
+          administrative expenses and fundraising expenses, as reported on the income\n\
+          statement for the rating period. <br/> ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+      totalRevenue:
+        type: "number"
+        description: "Total revenue, as reported on the income statement for the rating\
+          \ period.\nCharities can derive revenue or funding from a variety of sources,\
+          \ including\ncontributions, program services, membership dues, interest\
+          \ on savings,\ninvestment income, special events, and sales of inventory.\
+          \ <br/> ![Rated\nCharities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+      totalNetAssets:
+        type: "number"
+        description: "Total net assets, computed as he difference between assets and\
+          \ liabilities,\nas reported on the organization's financial statement for\
+          \ the rating period.\nAlthough charities do not exist to make money, they\
+          \ do work to build and\nmaintain reasonable reserves of net assets. Growing\
+          \ its net assets helps a\ncharity outpace inflation and sustain future program\
+          \ activities. [Learn\nMore](https://www.charitynavigator.org/index.cfm?bay=glossary.word&word=Net%20Assets&print=1)\n\
+          <br/> ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+      totalContributions:
+        type: "number"
+        description: "Total contributions is the sum of all contributions - including\n\
+          gifts, and grants, federated campaigns, membership dues, fundraising events,\n\
+          related organizations, and government grants. ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+      primaryRevenue:
+        type: "number"
+        description: "The revenue a charity generates as a result of the work it does.\n\
+          A charity's primary revenue includes grants and contributions, revenue produced\
+          \ from\nprograms and services, and membership fees and dues. [Learn\nMore](https://www.charitynavigator.org/index.cfm?bay=glossary.word&gid=10&print=1)\n\
+          <br/> ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+      otherRevenue:
+        type: "number"
+        description: "In addition to primary revenue sources, charities derive revenue\
+          \ from investments,\nrents, special events, sales of inventory, and other\
+          \ unrelated business income. [Learn\nMore](https://www.charitynavigator.org/index.cfm?bay=glossary.word&word=Other%20Revenue&print=1)\n\
+          <br/> ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+      ceoCompensationPercent:
+        type: "number"
+        description: "Based on the data found in each charity's most recently filed\
+          \ Form 990, we include salary,\ncash bonuses, and expense accounts when\
+          \ we measure a CEO's compensation. We do not include\ncontributions to benefit\
+          \ plans or deferred compensation that is allocated to be paid in later\n\
+          years. Deferred compensation is often accrued over many years and then is\
+          \ paid as a lump sum in\none year. As such, we do include deferred compensation\
+          \ as part of the compensation figure in the\nyear in which it is actually\
+          \ paid out to the employee and/or when it is expensed per the 990.\nMany\
+          \ charities use fiscal years that differ from the calendar year. In these\
+          \ cases, it is\nimportant to recognize that the CEO’s compensation reported\
+          \ on the Form 990 reflects the CEO’s\npay for the calendar year, not the\
+          \ fiscal year. Why? Because the IRS requires that charities\nreport compensation\
+          \ on the Form 990 exactly the same as they did on the W-2 Form\n(which is\
+          \ based on the calendar year).\nMany donors are understandably interested\
+          \ in how much the leaders of charities earn. This information\nis public\
+          \ record so Charity Navigator reports it for our users. This information\
+          \ does not factor\ninto an organization's Charity Navigator rating. We provide\
+          \ this percentage so donors can quickly put\nthe salary into perspective.\
+          \ For comparative purposes, a charity with total expenses of $20 million,\n\
+          which compensates its highest paid executive at $200,000 per year (or 1%)\
+          \ would appear to have tighter\ncontrol on expenses than the $1 million\
+          \ organization which pays its chief executive the same amount\n(or 20% of\
+          \ expenses for one person). [Learn\nMore](https://www.charitynavigator.org/index.cfm/bay/glossary.word/word/Leadership%20Compensation%20and%20Other%20Salaries%20of%20Note%20as%20a%20Percentage%20of%20Total%20Expenses/print/1.htm)\n\
+          <br/> ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+    description: "A subset of financial disclosures reported on the organization's\
+      \ IRS Form\n990."
+  OrganizationCollection_category:
+    type: "object"
+    properties:
+      categoryID:
+        type: "string"
+        description: "Charity Navigator's unique identifier for the category."
+        minLength: 1
+      categoryName:
+        type: "string"
+        description: "Name of the category."
+        minLength: 1
+    description: "The primary category of this organization's charitable work as assigned\
+      \ by\nCharity Navigator."
+  OrganizationCollection_cause:
+    type: "object"
+    properties:
+      causeID:
+        type: "string"
+        description: "Charity Navigator's unique identifier for the cause."
+        minLength: 1
+      causeName:
+        type: "string"
+        description: "Name of the cause."
+        minLength: 1
+    description: "The primary cause of this organization's charitable work as assigned\
+      \ by\nCharity Navigator."
+  OrganizationCollection_irsClassification:
+    type: "object"
+    properties:
+      subsection:
+        type: "string"
+        description: "A subsection in the tax code which defines the category under\
+          \ which an\norganization may be exempt from taxes."
+        minLength: 1
+      foundationStatus:
+        type: "string"
+        description: "IRS classification of type of foundation. This is only applicable\
+          \ to\n501(c)(3) Foundations."
+        minLength: 1
+      deductibility:
+        $ref: "#/definitions/DeductibilityType"
+      deductibilityDetail:
+        type: "string"
+        description: "Provides more information when deductibility is NOT_DEDUCTIBLE_GENERALLY,\n\
+          indicating that donations to an organization are not generally deductible."
+        minLength: 1
+      deductibilityCode:
+        type: "string"
+        description: "IRS Code to specify whether donations to this organization are\
+          \ tax-deductible."
+        minLength: 1
+      nteeCode:
+        type: "string"
+        description: "The IRS's full classification code for the type of work this\
+          \ Organization\nperforms"
+        minLength: 1
+      nteeClassification:
+        type: "string"
+        description: "The IRS's text description of the work that this Organization\
+          \ performs\nwhich corresponds to the full NTEECode"
+        minLength: 1
+      nteeLetter:
+        type: "string"
+        description: "Within the IRS's classification system, the first letter of\
+          \ the code\nrepresents broad subsectors, such as health, education, and\
+          \ youth development,\nof the charitable organization universe."
+        minLength: 1
+      nteeType:
+        type: "string"
+        description: "The IRS's text description of the NTEE Letter portion of this\
+          \ this\norganizations classification"
+        minLength: 1
+      nteeSuffix:
+        type: "string"
+        description: "The last and optional character in the IRS classification system"
+        minLength: 1
+      affiliation:
+        type: "string"
+        description: "affiliation"
+        minLength: 1
+      groupName:
+        type: "string"
+        description: "groupName"
+        minLength: 1
+      exemptOrgStatus:
+        type: "string"
+        description: "exemptOrgStatus"
+        minLength: 1
+      exemptOrgStatusCode:
+        type: "string"
+        description: "exemptOrgStatusCode"
+        minLength: 1
+      rulingDate:
+        type: "string"
+        description: "rulingDate"
+        minLength: 1
+      assetAmount:
+        type: "string"
+        description: "assetAmount"
+        minLength: 1
+      incomeAmount:
+        type: "string"
+        description: "incomeAmount"
+        minLength: 1
+      latest990:
+        type: "string"
+        description: "latest990"
+        minLength: 1
+      filingRequirement:
+        type: "string"
+        description: "filingRequirement"
+        minLength: 1
+      accountingPeriod:
+        type: "string"
+        description: "accountingPeriod"
+        minLength: 1
+      classification:
+        type: "string"
+        description: "classification"
+        minLength: 1
+    description: "The classification and tax treatment of the Organization by the\
+      \ Internal\nRevenue Service."
+  DeductibilityType:
+    type: "string"
+    description: "A value that summarizes deductibilty of donations to an Organization\
+      \ under a\ngiven IRS Classification."
+    enum:
+    - "Deductible"
+    - "Not Deductible"
+    - "Not Deductible, Generally"
+  OrganizationCollection_mailingAddress:
+    type: "object"
+    properties:
+      streetAddress1:
+        type: "string"
+        description: "First line of the street address."
+        minLength: 1
+      streetAddress2:
+        type: "string"
+        description: "Second line of the street address."
+        minLength: 1
+      city:
+        type: "string"
+        description: "City."
+        minLength: 1
+      stateOrProvince:
+        type: "string"
+        description: "State or province."
+        minLength: 1
+      postalCode:
+        type: "string"
+        description: "Postal code."
+        minLength: 1
+      country:
+        type: "string"
+        description: "Country. Note that Charity Navigator currently covers only organizations\n\
+          based in the United States. If the Country is null, empty, or missing, it\
+          \ is\nsafe to assume a US-based address."
+        minLength: 1
+    description: "Mailing address of the organization."
+  OrganizationCollection_donationAddress:
+    type: "object"
+    properties:
+      streetAddress1:
+        type: "string"
+        description: "First line of the street address."
+        minLength: 1
+      streetAddress2:
+        type: "string"
+        description: "Second line of the street address."
+        minLength: 1
+      city:
+        type: "string"
+        description: "City."
+        minLength: 1
+      stateOrProvince:
+        type: "string"
+        description: "State or province."
+        minLength: 1
+      postalCode:
+        type: "string"
+        description: "Postal code."
+        minLength: 1
+      country:
+        type: "string"
+        description: "Country. Note that Charity Navigator currently covers only organizations\n\
+          based in the United States. If the Country is null, empty, or missing, it\
+          \ is\nsafe to assume a US-based address."
+        minLength: 1
+    description: "Address to send donations to the organization."
+  OrganizationCollection_advisories:
+    type: "object"
+    properties:
+      severity:
+        $ref: "#/definitions/Severity"
+      active:
+        $ref: "#/definitions/AdvisoryCollection_link"
+    description: "Advisories related to the organization that are currently in effect."
+  Severity:
+    type: "string"
+    description: "Enumeration describing three levels of severity."
+    enum:
+    - "High"
+    - "Moderate"
+    - "Low"
+  AdvisoryCollection_link:
+    type: "object"
+    required:
+    - "_links"
+    properties:
+      _links:
+        $ref: "#/definitions/_RapidLinksMap"
+  _RapidLinksMap:
+    type: "object"
+    description: "A set of inbound hyperlinks to a domain object.\nEach property maps\
+      \ a [link relation](https://www.iana.org/assignments/link-relations/link-relations.xhtml)\
+      \ (the property name) to a hyperlink object (the property values).\n"
+    additionalProperties:
+      type: "object"
+      description: "An object representing a hyperlink to a related resource.\nThe\
+        \ link relation is specified as the containing property name.\nThe `href`\
+        \ property specifies the target URL, and additional properties may specify\
+        \ other metadata.\n"
+  OrganizationLink:
+    type: "object"
+    required:
+    - "_links"
+    - "ein"
+    properties:
+      ein:
+        type: "string"
+        description: "The federal Employer Identification Number for the charitable\
+          \ organization.\nMay be set to a system-assigned value in cases where the\
+          \ organization is\nfictitious, or the real EIN is not available."
+        minLength: 1
+      charityName:
+        type: "string"
+        description: "Name of the charitable organization."
+        minLength: 1
+      _links:
+        $ref: "#/definitions/_RapidLinksMap"
+  OrganizationObject:
+    type: "object"
+    required:
+    - "ein"
+    properties:
+      ein:
+        type: "string"
+        description: "The federal Employer Identification Number for the charitable\
+          \ organization.\nMay be set to a system-assigned value in cases where the\
+          \ organization is\nfictitious, or the real EIN is not available."
+        minLength: 1
+      orgID:
+        type: "integer"
+        description: "Internal identifier assigned by Charity Navigator. Only rated\
+          \ charities have\nan orgID. <br/> ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+      charityName:
+        type: "string"
+        description: "Name of the charitable organization."
+        minLength: 1
+      tagLine:
+        type: "string"
+        description: "Tagline describing the charity."
+        minLength: 1
+      websiteURL:
+        type: "string"
+        description: "URL of the organization's website. <br/> ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+        minLength: 1
+      charityNavigatorURL:
+        type: "string"
+        minLength: 1
+      mission:
+        type: "string"
+        description: "The organization's mission statement."
+        minLength: 1
+      phoneNumber:
+        type: "string"
+        description: "Main phone number of the organization. <br/> ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+        minLength: 1
+      generalEmail:
+        type: "string"
+        description: "General email address for the organization. <br/> ![Content\n\
+          Subscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+        minLength: 1
+      category:
+        $ref: "#/definitions/OrganizationObject_category"
+      cause:
+        $ref: "#/definitions/OrganizationObject_cause"
+      irsClassification:
+        $ref: "#/definitions/IRSClassification"
+      mailingAddress:
+        $ref: "#/definitions/Address"
+      donationAddress:
+        $ref: "#/definitions/Address"
+      activeAdvisories:
+        $ref: "#/definitions/AdvisoryCollection_link"
+      removedAdvisories:
+        $ref: "#/definitions/AdvisoryCollection_link"
+      currentBoardChair:
+        $ref: "#/definitions/Representative"
+      currentCEO:
+        $ref: "#/definitions/Representative"
+      currentRating:
+        $ref: "#/definitions/ratingLink"
+      ratingHistory:
+        $ref: "#/definitions/RatingCollection_link"
+    description: "Represents a single Organization in Charity Navigator."
+  OrganizationObject_category:
+    type: "object"
+    properties:
+      categoryID:
+        type: "string"
+        description: "Charity Navigator's unique identifier for the category."
+        minLength: 1
+      categoryName:
+        type: "string"
+        description: "Name of the category."
+        minLength: 1
+      image:
+        type: "string"
+        description: "URL for an image representing the Category."
+        minLength: 1
+      charityNavigatorURL:
+        type: "string"
+        description: "URL to the Category page on Charity Navigator's website."
+        minLength: 1
+    description: "The primary category of the charity."
+  OrganizationObject_cause:
+    type: "object"
+    properties:
+      causeID:
+        type: "string"
+        description: "Charity Navigator's unique identifier for the cause."
+        minLength: 1
+      causeName:
+        type: "string"
+        description: "Name of the cause."
+        minLength: 1
+      image:
+        type: "string"
+        description: "URL for an image representing the Cause."
+        minLength: 1
+      charityNavigatorURL:
+        type: "string"
+        description: "URL to the Cause page on Charity Navigator's website."
+        minLength: 1
+    description: "The primary cause of this organization's charitable work as assigned\
+      \ by\nCharity Navigator."
+  IRSClassification:
+    type: "object"
+    properties:
+      subsection:
+        type: "string"
+        description: "A subsection in the tax code which defines the category under\
+          \ which an\norganization may be exempt from taxes."
+        minLength: 1
+      foundationStatus:
+        type: "string"
+        description: "IRS classification of type of foundation. This is only applicable\
+          \ to\n501(c)(3) Foundations."
+        minLength: 1
+      deductibility:
+        $ref: "#/definitions/DeductibilityType"
+      deductibilityDetail:
+        type: "string"
+        description: "Provides more information when deductibility is NOT_DEDUCTIBLE_GENERALLY,\n\
+          indicating that donations to an organization are not generally deductible."
+        minLength: 1
+      deductibilityCode:
+        type: "string"
+        description: "IRS Code to specify whether donations to this organization are\
+          \ tax-deductible."
+        minLength: 1
+      nteeCode:
+        type: "string"
+        description: "The IRS's full classification code for the type of work this\
+          \ Organization\nperforms"
+        minLength: 1
+      nteeClassification:
+        type: "string"
+        description: "The IRS's text description of the work that this Organization\
+          \ performs\nwhich corresponds to the full NTEECode"
+        minLength: 1
+      nteeLetter:
+        type: "string"
+        description: "Within the IRS's classification system, the first letter of\
+          \ the code\nrepresents broad subsectors, such as health, education, and\
+          \ youth development,\nof the charitable organization universe."
+        minLength: 1
+      nteeType:
+        type: "string"
+        description: "The IRS's text description of the NTEE Letter portion of this\
+          \ this\norganizations classification"
+        minLength: 1
+      nteeSuffix:
+        type: "string"
+        description: "The last and optional character in the IRS classification system"
+        minLength: 1
+      affiliation:
+        type: "string"
+        description: "affiliation"
+        minLength: 1
+      groupName:
+        type: "string"
+        description: "groupName"
+        minLength: 1
+      exemptOrgStatus:
+        type: "string"
+        description: "exemptOrgStatus"
+        minLength: 1
+      exemptOrgStatusCode:
+        type: "string"
+        description: "exemptOrgStatusCode"
+        minLength: 1
+      rulingDate:
+        type: "string"
+        description: "rulingDate"
+        minLength: 1
+      assetAmount:
+        type: "string"
+        description: "assetAmount"
+        minLength: 1
+      incomeAmount:
+        type: "string"
+        description: "incomeAmount"
+        minLength: 1
+      latest990:
+        type: "string"
+        description: "latest990"
+        minLength: 1
+      filingRequirement:
+        type: "string"
+        description: "filingRequirement"
+        minLength: 1
+      accountingPeriod:
+        type: "string"
+        description: "accountingPeriod"
+        minLength: 1
+      classification:
+        type: "string"
+        description: "classification"
+        minLength: 1
+    description: "Describes the classification and tax treatment of the Organization\
+      \ by the\nInternal Revenue Service."
+  Address:
+    type: "object"
+    properties:
+      streetAddress1:
+        type: "string"
+        description: "First line of the street address."
+        minLength: 1
+      streetAddress2:
+        type: "string"
+        description: "Second line of the street address."
+        minLength: 1
+      city:
+        type: "string"
+        description: "City."
+        minLength: 1
+      stateOrProvince:
+        type: "string"
+        description: "State or province."
+        minLength: 1
+      postalCode:
+        type: "string"
+        description: "Postal code."
+        minLength: 1
+      country:
+        type: "string"
+        description: "Country. Note that Charity Navigator currently covers only organizations\n\
+          based in the United States. If the Country is null, empty, or missing, it\
+          \ is\nsafe to assume a US-based address."
+        minLength: 1
+    description: "A physical or postal address."
+  Representative:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        description: "The name of the indivdual holding this position within the organization\n\
+          <br/> ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+        minLength: 1
+      title:
+        type: "string"
+        description: "The title of this individual at this organization <br/> ![Rated\
+          \ Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+        minLength: 1
+    description: "An officer or other individual in a specified role within an Organization."
+  ratingLink:
+    type: "object"
+    required:
+    - "_links"
+    properties:
+      ratingID:
+        type: "string"
+        description: "Unique identifier for this Rating. <br/> ![Rated Charities\n\
+          Only](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+        minLength: 1
+      score:
+        type: "number"
+        description: "Overall score, out of a possible 100, based on a two-dimensional\
+          \ analysis of\nfinancial health and accountability.\n[Learn\nMore](https://www.charitynavigator.org/index.cfm?bay=content.view&cpid=1287)\n\
+          ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+      rating:
+        type: "integer"
+        description: "Overall rating, on a four-star scale, based on a two-dimensional\
+          \ analysis of\nfinancial health and accountability.\n[Learn\nMore](https://www.charitynavigator.org/index.cfm?bay=content.view&cpid=1287)\n\
+          ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\")"
+      publicationDate:
+        type: "string"
+        format: "date"
+        description: "Date the Rating was published ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\") <br/>"
+      ratingImage:
+        $ref: "#/definitions/IconSet"
+      form990:
+        $ref: "#/definitions/Form990"
+      _links:
+        $ref: "#/definitions/_RapidLinksMap"
+  RatingCollection_link:
+    type: "object"
+    required:
+    - "_links"
+    properties:
+      _links:
+        $ref: "#/definitions/_RapidLinksMap"
+  RatingCollection:
+    type: "array"
+    items:
+      $ref: "#/definitions/ratingLink"
+  RatingObject:
+    type: "object"
+    required:
+    - "includedOrganizations"
+    properties:
+      ratingID:
+        type: "string"
+        description: "Unique identifier for this Rating. <br/> ![Rated Charities\n\
+          Only](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+        minLength: 1
+      score:
+        type: "number"
+        description: "Overall score, out of a possible 100, based on a two-dimensional\
+          \ analysis of\nfinancial health and accountability.\n[Learn\nMore](https://www.charitynavigator.org/index.cfm?bay=content.view&cpid=1287)\n\
+          ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+      rating:
+        type: "integer"
+        description: "Overall rating, on a four-star scale, based on a two-dimensional\
+          \ analysis of\nfinancial health and accountability.\n[Learn\nMore](https://www.charitynavigator.org/index.cfm?bay=content.view&cpid=1287)\n\
+          ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\")"
+      publicationDate:
+        type: "string"
+        format: "date"
+        description: "Date the Rating was published ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\") <br/>"
+      referenceOrganization:
+        $ref: "#/definitions/OrganizationLink"
+      includedOrganizations:
+        type: "array"
+        description: "All organizations to which the rating applies. In most cases,\
+          \ a rating will\napply to a single organization, and in that case primaryOrganization\
+          \ will be the\nonly member of the includedOrganizationsList.  A rating for\
+          \ a composite\norganization will include multiple individual organizations,\
+          \ each with a\ndistinct EIN. <br/> ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+        items:
+          $ref: "#/definitions/OrganizationLink"
+        minItems: 1
+      ratingImage:
+        $ref: "#/definitions/IconSet"
+      form990:
+        $ref: "#/definitions/Form990"
+      financialRating:
+        $ref: "#/definitions/FinancialRating"
+      accountabilityRating:
+        $ref: "#/definitions/AccountabilityRating"
+    description: "Represents a single Rating in Charity Navigator. Each rating is\
+      \ listed once,\nunder its primary `referenceOrganization`. Note that the rating\
+      \ may apply to\nother organizations, and this is represented by `includedOrganizations`,\
+      \ which\nis a collection of hyperlinks to all of the organizations to which\
+      \ the rating\napplies. <br/> ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+      \"Included with the paid Content Subscription.\")"
+  FinancialRating:
+    type: "object"
+    properties:
+      score:
+        type: "number"
+        description: "Overall financial score, out of a possible 100, based on a set\
+          \ of individual\nmeasures of financial health.\n[Learn\nMore](https://www.charitynavigator.org/index.cfm?bay=content.view&cpid=35)\n\
+          ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+      rating:
+        type: "integer"
+        description: "Overall financial rating, on a four-star scale.\n[Learn\nMore](https://www.charitynavigator.org/index.cfm?bay=content.view&cpid=1287)\n\
+          ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+      performanceMetrics:
+        $ref: "#/definitions/PerformanceMetrics"
+    description: "A composite of an organization's Financial Score and Financial Rating,\
+      \ along\nwith the performance metrics that Charity Navigator compiles to determine\
+      \ the\nscore."
+  PerformanceMetrics:
+    type: "object"
+    properties:
+      fundraisingEfficiency:
+        type: "number"
+        description: "The amount spent to raise $1 in charitable contributions.\n\
+          [Learn\nMore](https://www.charitynavigator.org/index.cfm?bay=glossary.word&word=Fundraising%20Efficiency&mid=1&cid=12&print=1*)\n\
+          ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+      fundraisingExpensesRatio:
+        type: "number"
+        description: "This measure reflects what a charity spends to raise money.\n\
+          [Learn\nMore](https://www.charitynavigator.org/index.cfm?bay=glossary.word&word=Fundraising%20Expenses&mid=2&cid=12)\n\
+          ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+      programExpensesGrowth:
+        type: "number"
+        description: "Average annual growth of organization's program expenses.\n\
+          [Learn\nMore](https://www.charitynavigator.org/index.cfm?bay=glossary.word&word=Program%20Expenses%20Growth&mid=6&cid=12&print=1)\n\
+          ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+      programExpensesRatio:
+        type: "number"
+        description: "The percent of its total expenses a charity spends on the programs\
+          \ and\nservices it exists to deliver. [Learn\nMore](https://www.charitynavigator.org/index.cfm?bay=glossary.word&word=Program%20Expenses&mid=7&cid=21&print=1)\n\
+          ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+      administrationExpensesRatio:
+        type: "number"
+        description: "This measure reflects what percent of its total budget a charity\
+          \ spends on\noverhead, administrative staff and associated costs, and organizational\n\
+          meetings.\n[Learn\nMore](https://www.charitynavigator.org/index.cfm?bay=glossary.word&word=Administrative%20Expenses&mid=3&cid=12&print=1)\n\
+          ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+      liabilitiesToAssetsRatio:
+        type: "number"
+        description: "Liabilities to Assets is an indicator of an organization’s solvency\
+          \ and or\nlong term sustainability. This ratio is computed by dividing a\
+          \ charity's total\nliabilities by its total assets.\n[Learn\nMore](https://www.charitynavigator.org/index.cfm?bay=glossary.word&word=Liabilities%20to%20Assets&mid=10&cid=16&print=1)\n\
+          ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+      workingCapitalRatio:
+        type: "number"
+        description: "Determines how long a charity could sustain its level of spending\
+          \ using its\nnet available assets, or working capital, as reported on its\
+          \ most recently filed\nForm 990.\n[Learn\nMore](https://www.charitynavigator.org/index.cfm?bay=glossary.word&word=Working%20Capital%20Ratio&mid=4&cid=12&print=1)\n\
+          ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+      primaryRevenueGrowth:
+        type: "number"
+        description: "Prior to CN2.1 Ratings looked at Primary Revenue Growth for\
+          \ an Organization\nin addition to Program Expense Growth.  For CN2.1 Ratings\
+          \ this is no longer\nconsidered and will be null <br/> ![Rated Charities\n\
+          Only](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+    description: "A collection of financial performance metrics, each of which has\
+      \ an assigned\nweight in Charity Navigator's Financial Score and Financial Rating"
+  AccountabilityRating:
+    type: "object"
+    properties:
+      score:
+        type: "number"
+        description: "Overall accountability score, out of a possible 100, based on\
+          \ a set of\nindividual measures of accountability and transparency.\n[Learn\n\
+          More](https://www.charitynavigator.org/index.cfm?bay=content.view&cpid=1093)\n\
+          <br/> ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+      rating:
+        type: "integer"
+        description: "Overall accountability and transparency rating, on a four-star\
+          \ scale.\n[Learn\nMore](https://www.charitynavigator.org/index.cfm?bay=content.view&cpid=1283)\n\
+          ![Rated Charities\nOnly](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/Blue_Star-16.png\n\
+          \"Only available for rated charities.\") ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+          \"Included with the paid Content Subscription.\")"
+      accountabilityTests:
+        $ref: "#/definitions/AccountabilityTests"
+    description: "A composite of an organization's Accountability and Transparency\
+      \ Score and\nRating, along with the accountability and transparency tests that\
+      \ Charity\nNavigator compiles to determine the score."
+  AccountabilityTests:
+    type: "object"
+    properties:
+      boardListStatus:
+        $ref: "#/definitions/PassFailOrNotReported"
+      staffListStatus:
+        $ref: "#/definitions/PassFailOrNotReported"
+      auditedFinancialStatus:
+        $ref: "#/definitions/PassFailOrNotReported"
+      form990Status:
+        $ref: "#/definitions/PassFailOrNotReported"
+      privacyStatus:
+        $ref: "#/definitions/PassFailOrOptOut"
+      loansToOrFromOfficers:
+        $ref: "#/definitions/PassFailOrNotReported"
+      loansToOfficers:
+        $ref: "#/definitions/PassFailOrNotReported"
+      loansFromOfficers:
+        $ref: "#/definitions/PassFailOrNotReported"
+      materialDiversionOfAssets:
+        $ref: "#/definitions/PassFailOrRemediated"
+      boardMeetingMinutes:
+        $ref: "#/definitions/PassFailOrNotReported"
+      distributes990ToBoard:
+        $ref: "#/definitions/PassFailOrNotReported"
+      conflictOfInterestPolicy:
+        $ref: "#/definitions/PassFailOrNotReported"
+      whistleBlowerPolicy:
+        $ref: "#/definitions/PassFailOrNotReported"
+      recordsRetentionPolicy:
+        $ref: "#/definitions/PassFailOrNotReported"
+      reportsCEOAndSalary:
+        $ref: "#/definitions/PassFailOrNotReported"
+      ceoCompensationProcedure:
+        $ref: "#/definitions/PassFailOrNotReported"
+      compensatesBoard:
+        $ref: "#/definitions/PassFailOrNotReported"
+      independentAudit:
+        $ref: "#/definitions/PassFailOrPartial"
+      independentBoard:
+        $ref: "#/definitions/PassFailOrNotReported"
+    description: "A set of conditional tests, each of which has an assigned weight\
+      \ in Charity\nNavigator's Accountability and Transparency Score and Rating.\
+      \ These tests\ngenerally have a value of \"Pass\" or \"Fail.\" Some tests may\
+      \ be \"Not Reported\", or\nhave a specific \"Partial\" state, somewhere in between\
+      \ an unequivocal pass or\nfail state."
+  PassFailOrNotReported:
+    type: "string"
+    description: "Enum for reporting of most accountability and transparency tests.\
+      \ The\ndocumentation for each metric should describe the criteria for a passing\
+      \ value."
+    enum:
+    - "Pass"
+    - "Fail"
+    - "Not Reported"
+  PassFailOrOptOut:
+    type: "string"
+    description: "Enum for reporting of privacy tests within the accountability and\n\
+      transparency scoring system."
+    enum:
+    - "Pass"
+    - "Fail"
+    - "Opt-Out"
+  PassFailOrRemediated:
+    type: "string"
+    description: "Enum for reporting of the material diversion of assets test, and\
+      \ potentially\nfor similar tests, within the accountability and transparency\
+      \ scoring system."
+    enum:
+    - "Pass"
+    - "Fail"
+    - "Remediated"
+    - "Not Reported"
+  PassFailOrPartial:
+    type: "string"
+    description: "Enum for reporting of accountability and transparency tests that\
+      \ have a\npartial or equivocal value. Each test property should describe the\
+      \ criteria for\npassing and partial values."
+    enum:
+    - "Pass"
+    - "Fail"
+    - "Partial"
+    - "Not Reported"
+  AdvisoryCollection:
+    type: "array"
+    items:
+      $ref: "#/definitions/AdvisoryCollection_item"
+  AdvisoryCollection_item:
+    type: "object"
+    required:
+    - "sources"
+    properties:
+      advisoryID:
+        type: "string"
+        description: "Unique identifier for this advisory."
+        minLength: 1
+      severity:
+        $ref: "#/definitions/Severity"
+      datePublished:
+        type: "string"
+        format: "date"
+        description: "Date when the Advisory was first published."
+      dateRemoved:
+        type: "string"
+        format: "date"
+        description: "Date when the Advisory was removed. Advisory can be assumed\
+          \ to be active if\ndateRemoved is omitted."
+      dateModified:
+        type: "string"
+        format: "date"
+        description: "Date when the Advisory most recently modified."
+      organization:
+        $ref: "#/definitions/OrganizationLink"
+      sources:
+        type: "array"
+        description: "Ordered list of Advisory Sources"
+        items:
+          $ref: "#/definitions/AdvisorySource"
+        minItems: 1
+    description: "Represents the complete set of available Advisories."
+  AdvisorySource:
+    type: "object"
+    properties:
+      datePublished:
+        type: "string"
+        format: "date"
+        description: "Date when the Advisory Source was published."
+      dateRemoved:
+        type: "string"
+        format: "date"
+        description: "Date when the Advisory Source was removed.  The Advisory Source\
+          \ can be\nassumed to ba active if dateRemoved is omitted."
+      dateModified:
+        type: "string"
+        format: "date"
+        description: "Date when the Advisory Source was most recently modified."
+      publisher:
+        type: "string"
+        description: "Name of the Advisory Source publisher."
+        minLength: 1
+      url:
+        type: "string"
+        description: "URL referring to the Advisory Source."
+        minLength: 1
+      summary:
+        type: "string"
+        description: "A summary description of the Advisory Source."
+        minLength: 1
+    description: "A synopsis of an event or reference that triggers or provides additional\n\
+      details for an Advisory."
+  Advisory:
+    type: "object"
+    required:
+    - "sources"
+    properties:
+      advisoryID:
+        type: "string"
+        description: "Unique identifier for this advisory."
+        minLength: 1
+      severity:
+        $ref: "#/definitions/Severity"
+      datePublished:
+        type: "string"
+        format: "date"
+        description: "Date when the Advisory was first published."
+      dateRemoved:
+        type: "string"
+        format: "date"
+        description: "Date when the Advisory was removed. Advisory can be assumed\
+          \ to be active if\ndateRemoved is omitted."
+      dateModified:
+        type: "string"
+        format: "date"
+        description: "Date when the Advisory most recently modified."
+      organization:
+        $ref: "#/definitions/OrganizationLink"
+      sources:
+        type: "array"
+        description: "Ordered list of Advisory Sources"
+        items:
+          $ref: "#/definitions/AdvisorySource"
+        minItems: 1
+    description: "A cautionary communication from Charity Navigator, advising of unusual\n\
+      events or behavior related to a known organization."
+  ListCollection:
+    type: "array"
+    items:
+      $ref: "#/definitions/ListObjectLink"
+  ListObjectLink:
+    type: "object"
+    required:
+    - "_links"
+    properties:
+      _links:
+        $ref: "#/definitions/_RapidLinksMap"
+      listID:
+        type: "string"
+        description: "Unique ID for the list, assigned by Charity Navigator."
+        minLength: 1
+      listType:
+        type: "string"
+        description: "A general classification of the list."
+        minLength: 1
+      listName:
+        type: "string"
+        description: "Name of the list."
+        minLength: 1
+      listAbstract:
+        type: "string"
+        description: "Short list description."
+        minLength: 1
+      listImageURL:
+        type: "string"
+        description: "URL for an image representing the List."
+        minLength: 1
+      isCurrentlyFeatured:
+        type: "boolean"
+        description: "Boolean field, true is list is currently featured on site."
+      sortOrder:
+        type: "integer"
+        description: "If list is currently featured, the sort order it is currently\
+          \ displayed in."
+  List:
+    type: "object"
+    properties:
+      listID:
+        type: "string"
+        description: "Unique ID for the list, assigned by Charity Navigator."
+        minLength: 1
+      listName:
+        type: "string"
+        description: "Name of the list."
+        minLength: 1
+      listType:
+        type: "string"
+        description: "A general classification of the list."
+        minLength: 1
+      isCurrentlyFeatured:
+        type: "boolean"
+        description: "Boolean field, true is list is currently featured on site."
+      sortOrder:
+        type: "integer"
+        description: "If list is currently featured, the sort order it is currently\
+          \ displayed in."
+      listAbstract:
+        type: "string"
+        description: "Short list description."
+        minLength: 1
+      listExplanation:
+        type: "string"
+        description: "Long list description."
+        minLength: 1
+      listImageURL:
+        type: "string"
+        description: "URL for an image representing the List."
+        minLength: 1
+      charityNavigatorURL:
+        type: "string"
+        description: "URL to the List page on Charity Navigator's website."
+        minLength: 1
+      groups:
+        type: "array"
+        description: "Groups of organizations within the list. May be a single, unnamed\
+          \ group in\nthe case of a flat list."
+        items:
+          $ref: "#/definitions/OrganizationGroup"
+        minItems: 1
+    description: "A curated or generated list of organizations, published by Charity\n\
+      Navigator."
+  OrganizationGroup:
+    type: "object"
+    properties:
+      groupName:
+        type: "string"
+        description: "Optional name of the group."
+        minLength: 1
+      groupDescription:
+        type: "string"
+        description: "Description of the group."
+        minLength: 1
+      organizations:
+        type: "array"
+        description: "Organization entries in the list."
+        items:
+          $ref: "#/definitions/OrgListEntry"
+        minItems: 1
+    description: "A group of organization entries contained within a List. A composite\
+      \ \"List\nof Lists\" will have multiple named groups. A flat List of organizations\
+      \ will\nhave a single, unnamed group."
+  OrgListEntry:
+    type: "object"
+    properties:
+      rank:
+        type: "integer"
+        description: "Rank of the organization within its containing group."
+      groupDescription:
+        type: "string"
+        description: "Description of the group."
+        minLength: 1
+      groupName:
+        type: "string"
+        description: "Optional name of the group."
+        minLength: 1
+      organization:
+        $ref: "#/definitions/OrganizationLink"
+    description: "The participation of a individual organization as a member of an\n\
+      OrganizationList."
+  CategoryCollection:
+    type: "array"
+    items:
+      $ref: "#/definitions/CategoryCollection_item"
+  CategoryCollection_item:
+    type: "object"
+    properties:
+      categoryID:
+        type: "string"
+        description: "Charity Navigator's unique identifier for the category."
+        minLength: 1
+      categoryName:
+        type: "string"
+        description: "Name of the category."
+        minLength: 1
+      image:
+        type: "string"
+        description: "URL for an image representing the Category."
+        minLength: 1
+      charityNavigatorURL:
+        type: "string"
+        description: "URL to the Category page on Charity Navigator's website."
+        minLength: 1
+      causes:
+        $ref: "#/definitions/CategoryCollection_causes"
+    description: "Charity Navigator's classification hierarchy for charitable Organizations,\n\
+      including Categories and Causes. <br/> ![Content\nSubscription](https://cdn2.hubspot.net/hubfs/597611/CharityNavigator/FA-Data-Table-16.png\n\
+      \"Included with the paid Content Subscription.\")"
+  CategoryCollection_causes:
+    type: "array"
+    description: "A list of specific causes, contained within this general category."
+    items:
+      $ref: "#/definitions/CategoryCollection_causes_item"
+    minItems: 1
+  CategoryCollection_causes_item:
+    type: "object"
+    properties:
+      causeID:
+        type: "string"
+        description: "Charity Navigator's unique identifier for the cause."
+        minLength: 1
+      causeName:
+        type: "string"
+        description: "Name of the cause."
+        minLength: 1
+      image:
+        type: "string"
+        description: "URL for an image representing the Cause."
+        minLength: 1
+      charityNavigatorURL:
+        type: "string"
+        description: "URL to the Cause page on Charity Navigator's website."
+        minLength: 1
+  ActiveAdvisoryCollection:
+    type: "array"
+    items:
+      $ref: "#/definitions/ActiveAdvisoryCollection_item"
+  ActiveAdvisoryCollection_item:
+    type: "object"
+    required:
+    - "organization"
+    properties:
+      mailingAddress:
+        $ref: "#/definitions/ActiveAdvisoryCollection_mailingAddress"
+      organization:
+        $ref: "#/definitions/ActiveAdvisoryCollection_organization"
+      advisories:
+        $ref: "#/definitions/AdvisoryRollup"
+    description: "Represents the complete list of Organizations with active advisories."
+  ActiveAdvisoryCollection_mailingAddress:
+    type: "object"
+    properties:
+      city:
+        type: "string"
+        description: "City."
+        minLength: 1
+      stateOrProvince:
+        type: "string"
+        description: "State or province."
+        minLength: 1
+    description: "Mailing address of the organization."
+  ActiveAdvisoryCollection_organization:
+    type: "object"
+    properties:
+      ein:
+        type: "string"
+        description: "The federal Employer Identification Number for the charitable\
+          \ organization.\nMay be set to a system-assigned value in cases where the\
+          \ organization is\nfictitious, or the real EIN is not available."
+        minLength: 1
+      charityName:
+        type: "string"
+        description: "Name of the charitable organization."
+        minLength: 1
+      charityNavigatorURL:
+        type: "string"
+        minLength: 1
+    description: "Link to the organization resource, with all available details."
+  AdvisoryRollup:
+    type: "object"
+    properties:
+      severity:
+        $ref: "#/definitions/Severity"
+      active:
+        $ref: "#/definitions/AdvisoryCollection_link"
+    description: "A rolled up summary of the active advisory records of an organization.\n\
+      If the organization does not have any active advisory records, severity will\
+      \ have\na NULL value"
+  OrganizationCollection_searchOrganizations_response400:
+    type: "object"
+    properties:
+      errorMessage:
+        type: "string"
+        minLength: 1
+    description: "A generic structure to carry information about an error response\
+      \ from from\nthe service."
+  OrganizationCollection_searchOrganizations_response404:
+    type: "object"
+    properties:
+      errorMessage:
+        type: "string"
+        minLength: 1
+    description: "A generic structure to carry information about an error response\
+      \ from from\nthe service."
+  OrganizationObject_getOrganization_response400:
+    type: "object"
+    properties:
+      errorMessage:
+        type: "string"
+        minLength: 1
+    description: "A generic structure to carry information about an error response\
+      \ from from\nthe service."
+  OrganizationObject_getOrganization_response404:
+    type: "object"
+    properties:
+      errorMessage:
+        type: "string"
+        minLength: 1
+    description: "A generic structure to carry information about an error response\
+      \ from from\nthe service."
+  RatingCollection_getRatings_response400:
+    type: "object"
+    properties:
+      errorMessage:
+        type: "string"
+        minLength: 1
+    description: "A generic structure to carry information about an error response\
+      \ from from\nthe service."
+  RatingCollection_getRatings_response404:
+    type: "object"
+    properties:
+      errorMessage:
+        type: "string"
+        minLength: 1
+    description: "A generic structure to carry information about an error response\
+      \ from from\nthe service."
+  RatingObject_getRating_response400:
+    type: "object"
+    properties:
+      errorMessage:
+        type: "string"
+        minLength: 1
+    description: "A generic structure to carry information about an error response\
+      \ from from\nthe service."
+  RatingObject_getRating_response404:
+    type: "object"
+    properties:
+      errorMessage:
+        type: "string"
+        minLength: 1
+    description: "A generic structure to carry information about an error response\
+      \ from from\nthe service."
+  AdvisoryCollection_getAdvisories_response400:
+    type: "object"
+    properties:
+      errorMessage:
+        type: "string"
+        minLength: 1
+    description: "A generic structure to carry information about an error response\
+      \ from from\nthe service."
+  AdvisoryCollection_getAdvisories_response404:
+    type: "object"
+    properties:
+      errorMessage:
+        type: "string"
+        minLength: 1
+    description: "A generic structure to carry information about an error response\
+      \ from from\nthe service."
+  AdvisoryObject_getAdvisory_response400:
+    type: "object"
+    properties:
+      errorMessage:
+        type: "string"
+        minLength: 1
+    description: "A generic structure to carry information about an error response\
+      \ from from\nthe service."
+  AdvisoryObject_getAdvisory_response404:
+    type: "object"
+    properties:
+      errorMessage:
+        type: "string"
+        minLength: 1
+    description: "A generic structure to carry information about an error response\
+      \ from from\nthe service."
+  ListCollection_getLists_response400:
+    type: "object"
+    properties:
+      errorMessage:
+        type: "string"
+        minLength: 1
+    description: "A generic structure to carry information about an error response\
+      \ from from\nthe service."
+  ListCollection_getLists_response404:
+    type: "object"
+    properties:
+      errorMessage:
+        type: "string"
+        minLength: 1
+    description: "A generic structure to carry information about an error response\
+      \ from from\nthe service."
+  ListObject_getList_response400:
+    type: "object"
+    properties:
+      errorMessage:
+        type: "string"
+        minLength: 1
+    description: "A generic structure to carry information about an error response\
+      \ from from\nthe service."
+  ListObject_getList_response404:
+    type: "object"
+    properties:
+      errorMessage:
+        type: "string"
+        minLength: 1
+    description: "A generic structure to carry information about an error response\
+      \ from from\nthe service."
+  ActiveAdvisoryCollection_getAllActiveAdvisories_response400:
+    type: "object"
+    properties:
+      errorMessage:
+        type: "string"
+        minLength: 1
+    description: "A generic structure to carry information about an error response\
+      \ from from\nthe service."
+  ActiveAdvisoryCollection_getAllActiveAdvisories_response404:
+    type: "object"
+    properties:
+      errorMessage:
+        type: "string"
+        minLength: 1
+    description: "A generic structure to carry information about an error response\
+      \ from from\nthe service."
