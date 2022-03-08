@@ -11,10 +11,17 @@ class AppTextTheme {
   static TextStyle kTextHeader = GoogleFonts.roboto(
     color: ColorTheme.kSecondaryColor,
     fontSize: 40,
+    fontWeight: FontWeight.w600,
   );
 
   static TextStyle kTextContent = GoogleFonts.roboto(
     color: ColorTheme.kSwatchColor,
     fontSize: 22,
+  );
+
+  static TextStyle kButtonText = GoogleFonts.roboto(
+    color: ColorTheme.kPrimaryColor,
+    fontWeight: FontWeight.w600,
+    fontSize: 20,
   );
 }

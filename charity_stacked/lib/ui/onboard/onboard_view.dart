@@ -1,4 +1,5 @@
 import 'package:charity_stacked/ui/shared/styles.dart';
+import 'package:charity_stacked/ui/shared/widgets/oogway_padded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:stacked/stacked.dart';
@@ -11,36 +12,46 @@ class Onboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<OnboardModel>.reactive(
-      builder: (context, model, child) => Scaffold(
-        backgroundColor: ColorTheme.kPrimaryColor,
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Lottie.asset(
-                'assets/lottie/oogway_onboard.json',
+      builder: (context, model, child) {
+        return Scaffold(
+          backgroundColor: ColorTheme.kPrimaryColor,
+          body: SafeArea(
+            child: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.only(bottom: 48),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 128),
+                  Image.asset(
+                    'assets/images/oogway_logo.png',
+                    width: 125,
+                  ),
+                  const SizedBox(height: 48),
+                  Text(
+                    "Hi there,\nI'm Oogway",
+                    style: AppTextTheme.kTextHeader,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Your personal\nnonprofit guide',
+                    textAlign: TextAlign.center,
+                    style: AppTextTheme.kTextContent,
+                  ),
+                  const Spacer(),
+                  OogwayPaddedButton(
+                    text: 'Hi Oogway!',
+                    onTap: () {
+                      model.navigateToUserCreation();
+                    },
+                  )
+                ],
               ),
-              Text(
-                'Onboard',
-                style: AppTextTheme.kTextHeader,
-              ),
-              Text(
-                'This will be the onboard page, the first page the user will see',
-                textAlign: TextAlign.center,
-                style: AppTextTheme.kTextContent,
-              ),
-            ],
+            ),
           ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          child: const Icon(
-            Icons.arrow_forward_ios,
-            color: ColorTheme.kPrimaryColor,
-          ),
-          backgroundColor: Colors.white,
-          onPressed: model.navigateToUserCreation,
-        ),
-      ),
+        );
+      },
       viewModelBuilder: () => OnboardModel(),
     );
   }
