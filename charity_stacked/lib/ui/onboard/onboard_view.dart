@@ -23,9 +23,12 @@ class Onboard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   const SizedBox(height: 128),
-                  Image.asset(
-                    'assets/images/oogway_logo.png',
-                    width: 125,
+                  Hero(
+                    tag: "oogway-logo ",
+                    child: Image.asset(
+                      'assets/images/oogway_logo.png',
+                      width: 125,
+                    ),
                   ),
                   const SizedBox(height: 48),
                   Text(

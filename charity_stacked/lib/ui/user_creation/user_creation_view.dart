@@ -16,6 +16,13 @@ class UserCreation extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Hero(
+                tag: "oogway-logo ",
+                child: Image.asset(
+                  'assets/images/oogway_logo.png',
+                  width: 125,
+                ),
+              ),
               Text(
                 'User creation flow',
                 style: AppTextTheme.kTextHeader,

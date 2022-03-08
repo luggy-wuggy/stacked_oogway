@@ -1,7 +1,6 @@
 import 'package:charity_stacked/ui/shared/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:stacked_services/stacked_services.dart';
 
 class OogwayPaddedButton extends StatefulWidget {
   final String text;
@@ -27,6 +26,11 @@ class _OogwayPaddedButtonState extends State<OogwayPaddedButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTapCancel: () {
+        setState(() {
+          isButtonPressed = false;
+        });
+      },
       onTapDown: (TapDownDetails details) {
         setState(() {
           isButtonPressed = true;
