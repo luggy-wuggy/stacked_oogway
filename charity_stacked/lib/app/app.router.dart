@@ -37,9 +37,11 @@ class StackedRouter extends RouterBase {
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
   final _pagesMap = <Type, StackedRouteFactory>{
     Onboard: (data) {
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => const Onboard(),
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            const Onboard(),
         settings: data,
+        transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
       );
     },
     BottomNavRoot: (data) {
@@ -49,9 +51,12 @@ class StackedRouter extends RouterBase {
       );
     },
     UserCreation: (data) {
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => const UserCreation(),
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            const UserCreation(),
         settings: data,
+        transitionDuration: const Duration(milliseconds: 800),
+        reverseTransitionDuration: const Duration(milliseconds: 600),
       );
     },
   };

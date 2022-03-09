@@ -1,6 +1,5 @@
-import 'package:charity_stacked/ui/shared/styles.dart';
+import 'package:charity_stacked/common/styles.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import 'package:stacked/stacked.dart';
 
 import 'settings_viewmodel.dart';
@@ -17,7 +16,7 @@ class Settings extends StatelessWidget {
           children: [
             Text(
               'Settings',
-              style: AppTextTheme.kTextHeader,
+              style: AppTextTheme.kTextHeader1,
             ),
             Text(
               'This will be the settings screen',

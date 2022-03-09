@@ -1,4 +1,4 @@
-import 'package:charity_stacked/ui/shared/styles.dart';
+import 'package:charity_stacked/common/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -50,9 +50,7 @@ class _OogwayPaddedButtonState extends State<OogwayPaddedButton> {
         width: isButtonPressed ? 240 : 250,
         decoration: BoxDecoration(
           color: widget.buttonColor,
-          borderRadius: const BorderRadius.all(
-            Radius.circular(10),
-          ),
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
         ),
         alignment: Alignment.center,
         child: AnimatedDefaultTextStyle(

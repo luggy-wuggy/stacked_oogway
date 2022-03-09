@@ -1,4 +1,4 @@
-import 'package:charity_stacked/ui/shared/styles.dart';
+import 'package:charity_stacked/common/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
@@ -16,7 +16,7 @@ class Home extends StatelessWidget {
           children: [
             Text(
               'Home',
-              style: AppTextTheme.kTextHeader,
+              style: AppTextTheme.kTextHeader1,
             ),
             Text(
               'This will be the home screen',

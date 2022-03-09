@@ -1,7 +1,7 @@
 import 'package:charity_stacked/ui/home/home_view.dart';
 import 'package:charity_stacked/ui/search/search_view.dart';
 import 'package:charity_stacked/ui/settings/settings_view.dart';
-import 'package:charity_stacked/ui/shared/styles.dart';
+import 'package:charity_stacked/common/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 

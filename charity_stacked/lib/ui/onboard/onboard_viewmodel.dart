@@ -4,9 +4,16 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 class OnboardModel extends BaseViewModel {
+  bool isStartAnimate = true;
+
   final _navigationService = locator<NavigationService>();
 
-  void navigateToUserCreation() {
-    _navigationService.navigateTo(Routes.userCreation);
+  void navigateToUserCreation() async {
+    isStartAnimate = false;
+    notifyListeners();
+
+    Future.delayed(Duration(milliseconds: 200), () {
+      _navigationService.navigateTo(Routes.userCreation);
+    });
   }
 }
