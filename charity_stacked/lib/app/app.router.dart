@@ -38,8 +38,7 @@ class StackedRouter extends RouterBase {
   final _pagesMap = <Type, StackedRouteFactory>{
     Onboard: (data) {
       return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            const Onboard(),
+        pageBuilder: (context, animation, secondaryAnimation) => Onboard(),
         settings: data,
         transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
       );

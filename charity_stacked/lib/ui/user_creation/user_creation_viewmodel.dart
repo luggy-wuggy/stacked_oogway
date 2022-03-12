@@ -18,7 +18,7 @@ class UserCreationModel extends BaseViewModel {
     isStartAnimate = false;
     notifyListeners();
 
-    Future.delayed(Duration(milliseconds: 200), () {
+    Future.delayed(Duration(milliseconds: 0), () {
       _navigationService.back();
     });
   }

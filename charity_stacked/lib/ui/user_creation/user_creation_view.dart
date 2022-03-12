@@ -1,17 +1,19 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:charity_stacked/common/constants.dart';
 import 'package:charity_stacked/common/styles.dart';
+import 'package:charity_stacked/ui/onboard/onboard_controller.dart';
 import 'package:charity_stacked/ui/shared/widgets/oogway_padded_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stacked/stacked.dart';
 
 import 'user_creation_viewmodel.dart';
 
-class UserCreation extends StatelessWidget {
+class UserCreation extends ConsumerWidget {
   const UserCreation({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return ViewModelBuilder<UserCreationModel>.reactive(
       builder: (context, model, child) {
         return Scaffold(
@@ -31,7 +33,10 @@ class UserCreation extends StatelessWidget {
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: GestureDetector(
-                          onTap: () {
+                          onTap: () async {
+                            await ref
+                                .read(onboardNotifier.notifier)
+                                .popToOnboard();
                             model.navigateBack();
                           },
                           child: const Icon(
@@ -56,7 +61,7 @@ class UserCreation extends StatelessWidget {
                     duration: OogwayConstants.pageTransition,
                     child: FadeInRight(
                       animate: model.isStartAnimate,
-                      duration: OogwayConstants.pageTransition,
+                      duration: Duration(milliseconds: 400),
                       child: Text(
                         'So nice to meet you!\nWhat do your friends call you?',
                         textAlign: TextAlign.center,
@@ -70,7 +75,7 @@ class UserCreation extends StatelessWidget {
                     duration: OogwayConstants.pageTransition,
                     child: FadeInRight(
                       animate: model.isStartAnimate,
-                      duration: OogwayConstants.pageTransition,
+                      duration: Duration(milliseconds: 700),
                       child: Container(
                         height: 70,
                         width: 300,
@@ -92,7 +97,7 @@ class UserCreation extends StatelessWidget {
                     duration: OogwayConstants.pageTransition,
                     child: FadeInUp(
                       animate: model.isStartAnimate,
-                      duration: OogwayConstants.pageTransition,
+                      duration: Duration(milliseconds: 900),
                       child: OogwayPaddedButton(
                         text: 'Continue',
                         onTap: () {
