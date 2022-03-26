@@ -1,25 +1,24 @@
 import 'package:charity_stacked/app/app.locator.dart';
 import 'package:charity_stacked/app/app.router.dart';
 import 'package:charity_stacked/services/authentication.dart';
-import 'package:stacked/stacked.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stacked_services/stacked_services.dart';
 
-class UserCreationModel extends BaseViewModel {
+class UserCreationFlowController extends ChangeNotifier {
   final _navigationService = locator<NavigationService>();
-
-  bool isStartAnimate = true;
 
   void navigateToApp() {
     AuthenticationService.signInAnonymously();
     _navigationService.replaceWith(Routes.bottomNavRoot);
   }
 
-  void navigateBack() async {
-    isStartAnimate = false;
-    notifyListeners();
-
-    Future.delayed(Duration(milliseconds: 0), () {
-      _navigationService.back();
-    });
+  navigateBack() {
+    _navigationService.back();
   }
 }
+
+final userCreationControllerProvider =
+    ChangeNotifierProvider<UserCreationFlowController>((ref) {
+  return UserCreationFlowController();
+});

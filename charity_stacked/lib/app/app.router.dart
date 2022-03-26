@@ -6,13 +6,13 @@
 
 // ignore_for_file: public_member_api_docs
 
+import 'package:charity_stacked/ui/user_creation_flow/user_creation_flow_view.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked/stacked_annotations.dart';
 
 import '../ui/bottom_nav_root_view/bottom_nav_root_view.dart';
 import '../ui/onboard/onboard_view.dart';
-import '../ui/user_creation/user_creation_view.dart';
 
 class Routes {
   static const String onboard = '/';
@@ -38,7 +38,8 @@ class StackedRouter extends RouterBase {
   final _pagesMap = <Type, StackedRouteFactory>{
     Onboard: (data) {
       return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) => Onboard(),
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            const Onboard(),
         settings: data,
         transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
       );
