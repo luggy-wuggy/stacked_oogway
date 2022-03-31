@@ -41,6 +41,7 @@ class Onboard extends ConsumerWidget {
                 textAlign: TextAlign.center,
                 style: AppTextTheme.kTextContent,
               ),
+              const Spacer(),
               OogwayPaddedButton(
                 text: 'Hi Oogway!',
                 onTap: () {

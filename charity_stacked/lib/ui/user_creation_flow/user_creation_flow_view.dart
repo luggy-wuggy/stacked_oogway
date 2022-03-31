@@ -22,7 +22,7 @@ class UserCreation extends ConsumerWidget {
                 alignment: Alignment.centerLeft,
                 child: GestureDetector(
                   onTap: () async {
-                    ref.read(userCreationControllerProvider).navigateToApp();
+                    Navigator.pop(context);
                   },
                   child: const Icon(
                     Icons.arrow_back_rounded,

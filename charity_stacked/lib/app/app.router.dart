@@ -9,7 +9,6 @@
 import 'package:charity_stacked/ui/user_creation_flow/user_creation_flow_view.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
-import 'package:stacked/stacked_annotations.dart';
 
 import '../ui/bottom_nav_root_view/bottom_nav_root_view.dart';
 import '../ui/onboard/onboard_view.dart';
@@ -37,11 +36,9 @@ class StackedRouter extends RouterBase {
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
   final _pagesMap = <Type, StackedRouteFactory>{
     Onboard: (data) {
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            const Onboard(),
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => const Onboard(),
         settings: data,
-        transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
       );
     },
     BottomNavRoot: (data) {
@@ -51,12 +48,9 @@ class StackedRouter extends RouterBase {
       );
     },
     UserCreation: (data) {
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            const UserCreation(),
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => const UserCreation(),
         settings: data,
-        transitionDuration: const Duration(milliseconds: 800),
-        reverseTransitionDuration: const Duration(milliseconds: 600),
       );
     },
   };
