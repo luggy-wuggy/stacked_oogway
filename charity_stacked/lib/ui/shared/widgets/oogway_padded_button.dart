@@ -51,7 +51,7 @@ class _OogwayPaddedButtonState extends State<OogwayPaddedButton> {
           await widget.onTap();
         },
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 500),
+          duration: const Duration(milliseconds: 100),
           curve: Curves.easeInOutCubicEmphasized,
           height: isButtonPressed ? (buttonHeight * scaleFx) : buttonHeight,
           width: isButtonPressed ? (buttonWidth * scaleFx) : buttonWidth,
@@ -61,11 +61,11 @@ class _OogwayPaddedButtonState extends State<OogwayPaddedButton> {
           ),
           alignment: Alignment.center,
           child: AnimatedDefaultTextStyle(
-            duration: const Duration(milliseconds: 500),
+            duration: const Duration(milliseconds: 100),
             curve: Curves.easeInOutCubicEmphasized,
             style: isButtonPressed
-                ? widget.textStyle?.apply(fontSizeFactor: 0.9) ??
-                    AppTextTheme.kButtonText.apply(fontSizeFactor: 0.9)
+                ? widget.textStyle?.apply(fontSizeFactor: scaleFx) ??
+                    AppTextTheme.kButtonText.apply(fontSizeFactor: scaleFx)
                 : widget.textStyle ?? AppTextTheme.kButtonText,
             child: Text(
               widget.text,
