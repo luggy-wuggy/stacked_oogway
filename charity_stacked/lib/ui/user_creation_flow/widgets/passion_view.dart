@@ -12,7 +12,7 @@ class PassionView extends ConsumerWidget {
     return Column(
       children: [
         Text(
-          "Let's find the right charity\nWhat are you passionate about?",
+          "Let's find the right charity\nWhat are you passionate about?\n(select all that apply)",
           textAlign: TextAlign.center,
           style: AppTextTheme.kTextHeader2,
         ),

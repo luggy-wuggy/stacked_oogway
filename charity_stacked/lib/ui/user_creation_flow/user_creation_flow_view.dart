@@ -16,58 +16,50 @@ class UserCreation extends ConsumerWidget {
     return Scaffold(
       backgroundColor: ColorTheme.kPrimaryColor,
       body: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 48),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    GestureDetector(
-                      onTap: () async {
-                        ref
-                            .read(userCreationFlowControllerProvider)
-                            .previousPage();
-                      },
-                      child: const Icon(
-                        Icons.arrow_back_rounded,
-                        color: ColorTheme.kSecondaryLightColor,
-                        size: 25,
-                      ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  GestureDetector(
+                    onTap: () async {
+                      ref
+                          .read(userCreationFlowControllerProvider)
+                          .previousPage();
+                    },
+                    child: const Icon(
+                      Icons.arrow_back_rounded,
+                      color: ColorTheme.kSecondaryLightColor,
+                      size: 25,
                     ),
-                    const Spacer(),
-                    Hero(
-                      transitionOnUserGestures: true,
-                      tag: OogwayConstants.oogwayLogoHero,
-                      child: Image.asset(
-                        'assets/images/oogway_logo.png',
-                        width: 100,
-                      ),
+                  ),
+                  const Spacer(),
+                  Hero(
+                    transitionOnUserGestures: true,
+                    tag: OogwayConstants.oogwayLogoHero,
+                    child: Image.asset(
+                      'assets/images/oogway_logo.png',
+                      width: 100,
                     ),
-                    const Spacer(),
-                    const SizedBox(
-                      width: 25,
-                    )
-                  ],
-                ),
+                  ),
+                  const Spacer(),
+                  const SizedBox(
+                    width: 25,
+                  )
+                ],
               ),
-              Expanded(
-                child: PageView(
-                  controller: ref
-                      .read(userCreationFlowControllerProvider)
-                      .pageController,
-                  children: const [
-                    NicknameView(),
-                    LocationView(),
-                    PassionView()
-                  ],
-                ),
-              )
-            ],
-          ),
+            ),
+            Expanded(
+              child: PageView(
+                controller:
+                    ref.read(userCreationFlowControllerProvider).pageController,
+                children: const [NicknameView(), LocationView(), PassionView()],
+              ),
+            )
+          ],
         ),
       ),
     );
