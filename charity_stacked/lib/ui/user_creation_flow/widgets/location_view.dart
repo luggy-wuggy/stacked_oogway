@@ -17,7 +17,7 @@ class LocationView extends ConsumerWidget {
           textAlign: TextAlign.center,
           style: AppTextTheme.kTextHeader2,
         ),
-        const SizedBox(height: 130),
+        const SizedBox(height: 120),
         const OogwayTextFormField(
           label: "City or zip code",
         ),

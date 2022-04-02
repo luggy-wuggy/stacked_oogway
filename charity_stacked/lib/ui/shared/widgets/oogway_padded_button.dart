@@ -7,12 +7,14 @@ class OogwayPaddedButton extends StatefulWidget {
   final TextStyle? textStyle;
   final Color buttonColor;
   final Function onTap;
+  final bool? isButtonPressable;
 
   const OogwayPaddedButton({
     Key? key,
     required this.text,
     required this.onTap,
     this.textStyle,
+    this.isButtonPressable,
     this.buttonColor = ColorTheme.kSecondaryColor,
   }) : super(key: key);
 
@@ -34,21 +36,27 @@ class _OogwayPaddedButtonState extends State<OogwayPaddedButton> {
       alignment: Alignment.center,
       child: GestureDetector(
         onTapCancel: () {
-          setState(() {
-            isButtonPressed = false;
-          });
+          if (widget.isButtonPressable ?? true) {
+            setState(() {
+              isButtonPressed = false;
+            });
+          }
         },
         onTapDown: (TapDownDetails details) {
-          setState(() {
-            isButtonPressed = true;
-          });
+          if (widget.isButtonPressable ?? true) {
+            setState(() {
+              isButtonPressed = true;
+            });
+          }
         },
         onTapUp: (TapUpDetails details) async {
-          setState(() {
-            isButtonPressed = false;
-          });
-          await HapticFeedback.lightImpact();
-          await widget.onTap();
+          if (widget.isButtonPressable ?? true) {
+            setState(() {
+              isButtonPressed = false;
+            });
+            await HapticFeedback.lightImpact();
+            await widget.onTap();
+          }
         },
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 100),
@@ -56,7 +64,9 @@ class _OogwayPaddedButtonState extends State<OogwayPaddedButton> {
           height: isButtonPressed ? (buttonHeight * scaleFx) : buttonHeight,
           width: isButtonPressed ? (buttonWidth * scaleFx) : buttonWidth,
           decoration: BoxDecoration(
-            color: widget.buttonColor,
+            color: widget.isButtonPressable ?? true
+                ? widget.buttonColor
+                : widget.buttonColor.withOpacity(0.55),
             borderRadius: const BorderRadius.all(Radius.circular(10)),
           ),
           alignment: Alignment.center,

@@ -18,34 +18,30 @@ class NicknameView extends ConsumerWidget {
           style: AppTextTheme.kTextHeader2,
         ),
         const SizedBox(height: 120),
-        const OogwayTextFormField(
+        OogwayTextFormField(
           label: "Your name",
+          onChanged: (String value) {
+            if (value.isNotEmpty) {
+              ref.read(isButtonPressable.state).state = true;
+            } else {
+              ref.read(isButtonPressable.state).state = false;
+            }
+          },
         ),
-        // Container(
-        //   height: 70,
-        //   width: 300,
-        //   decoration: const BoxDecoration(
-        //     color: ColorTheme.kOpaquePrimaryColor,
-        //     borderRadius: BorderRadius.all(Radius.circular(10)),
-        //   ),
-        //   alignment: Alignment.center,
-        //   child: Text(
-        //     'Your name',
-        //     style: AppTextTheme.kTextContent,
-        //   ),
-        // ),
         const Spacer(),
         OogwayPaddedButton(
           text: 'Continue',
+          isButtonPressable: ref.watch(isButtonPressable),
           onTap: () {
             ref
                 .read(userCreationActionControllerProvider)
                 .nameSubmission("name");
-            //ref.read(userCreationControllerProvider).navigateToApp();
           },
         ),
-        SizedBox(height: 12)
+        const SizedBox(height: 12)
       ],
     );
   }
 }
+
+final isButtonPressable = StateProvider<bool>((ref) => false);

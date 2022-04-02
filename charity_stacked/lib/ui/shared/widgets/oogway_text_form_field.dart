@@ -1,16 +1,27 @@
 import 'package:charity_stacked/common/styles.dart';
 import 'package:flutter/material.dart';
 
-class OogwayTextFormField extends StatelessWidget {
+class OogwayTextFormField extends StatefulWidget {
   final String? label;
+  final void Function(String)? onChanged;
 
-  const OogwayTextFormField({Key? key, this.label}) : super(key: key);
+  const OogwayTextFormField({
+    Key? key,
+    this.label,
+    this.onChanged,
+  }) : super(key: key);
 
+  @override
+  State<OogwayTextFormField> createState() => _OogwayTextFormFieldState();
+}
+
+class _OogwayTextFormFieldState extends State<OogwayTextFormField> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: 300,
       child: TextFormField(
+        onChanged: widget.onChanged,
         cursorColor: ColorTheme.kSecondaryColor,
         style: AppTextTheme.kTextHeader2,
         textAlign: TextAlign.center,
@@ -20,7 +31,7 @@ class OogwayTextFormField extends StatelessWidget {
           filled: true,
           label: Center(
               child: Text(
-            label ?? "",
+            widget.label ?? "",
             style: AppTextTheme.kTextContent,
           )),
           alignLabelWithHint: true,
