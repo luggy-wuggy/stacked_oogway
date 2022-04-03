@@ -13,6 +13,7 @@ class Onboard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: ColorTheme.kPrimaryColor,
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Container(
           alignment: Alignment.center,

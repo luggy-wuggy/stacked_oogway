@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 class OogwayTextFormField extends StatefulWidget {
   final String? label;
   final void Function(String)? onChanged;
+  final FocusNode? focusNode;
 
   const OogwayTextFormField({
     Key? key,
     this.label,
     this.onChanged,
+    this.focusNode,
   }) : super(key: key);
 
   @override
@@ -21,6 +23,7 @@ class _OogwayTextFormFieldState extends State<OogwayTextFormField> {
     return SizedBox(
       width: 300,
       child: TextFormField(
+        focusNode: widget.focusNode,
         onChanged: widget.onChanged,
         cursorColor: ColorTheme.kSecondaryColor,
         style: AppTextTheme.kTextHeader2,

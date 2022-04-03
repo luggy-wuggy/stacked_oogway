@@ -58,15 +58,6 @@ class UserCreationFlowController extends ChangeNotifier {
     _pageController.dispose();
     super.dispose();
   }
-
-  // void navigateToApp() {
-  //   AuthenticationService.signInAnonymously();
-  //   _navigationService.replaceWith(Routes.bottomNavRoot);
-  // }
-
-  // navigateBack() {
-  //   _navigationService.back();
-  // }
 }
 
 final userCreationFlowControllerProvider =
@@ -81,3 +72,6 @@ enum UserCreationPageType {
   location,
   passion,
 }
+
+final nameFocusProvider = Provider<FocusNode>((ref) => FocusNode());
+final locationFocusProvider = Provider<FocusNode>((ref) => FocusNode());
